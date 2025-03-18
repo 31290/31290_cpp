@@ -17,11 +17,10 @@ private:
         Node *next;
         Node *prev;
     };
-    Node *head;
-    Node *tail;
-    Node *tail;
-    Node newNode();
-    Node deleteNode();
+    Node head;
+    Node tail;
+    Node *newNode(int value, Node *prev);
+    void deleteNode();
 };
 
 class oneWayList : public Lists
