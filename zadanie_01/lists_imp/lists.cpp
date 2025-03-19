@@ -1,13 +1,25 @@
 #include "lists.h"
 #include <stdarg.h>
 
+Lists::Lists()
+{
+    initiate();
+}
+
 Lists::Lists(...)
 {
-    head.prev = nullptr;
-    tail.next = nullptr;
+    initiate();
 
     va_list ap;
     va_start(ap);
+}
+
+Lists::initiate()
+{
+    head.prev = nullptr;
+    head.next = nullptr;
+    tail.next = nullptr;
+    tail.prev = nullptr;
 }
 
 Lists::~Lists()

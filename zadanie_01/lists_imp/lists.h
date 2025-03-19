@@ -21,6 +21,7 @@ private:
     Node tail;
     Node *newNode(int value, Node *prev);
     void deleteNode();
+    void initiate();
 };
 
 class oneWayList : public Lists
