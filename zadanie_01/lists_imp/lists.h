@@ -1,44 +1,34 @@
+template <typename T>
 class Lists
 {
 public:
-    Lists(...);
+    Lists();
+    Lists(T first, ...);
     ~Lists();
-    void push_front();
-    void push_back();
+    void push_front(T val);
+    void push_back(T val);
     void pop_front();
     void pop_back();
     void front();
     void back();
 
+    Lists<T> operator+=(T val);
+
 private:
     struct Node
     {
-        int value;
+        T value;
         Node *next;
-        Node *prev;
     };
     Node head;
     Node tail;
-    Node *newNode(int value, Node *prev);
+    Node *newNode(T value, Node *prev);
     void deleteNode();
     void initiate();
 };
 
-class oneWayList : public Lists
-{
-public:
-    /*there will be a one-way list here
-       +
-       A_
-      /\-\
-     _||"|_
-    ~^~^~^~^
-    */
-   
-private:
-};
-
-class twoWayList : public Lists
+template <typename T>
+class twoWayList : public Lists<T>
 {
 public:
     /*there will be a two-way list here
@@ -48,11 +38,19 @@ public:
     | |_____|_""_|
     |_|_[X]_|____|
     */
-   
+
 private:
+    struct Node
+    {
+        T value;
+        Node *next;
+        Node *prev;
+    };
+    Node *newNode(T value, Node *prev);
 };
 
-class cyclicList : public Lists
+template <typename T>
+class cyclicList : public Lists<T>
 {
 public:
     /*there will be a cyclic list here
@@ -62,6 +60,7 @@ public:
     | | /^\ | |
     |_|_|I|_|_|
     */
-   
+
 private:
+    void updateCycle(){};
 };

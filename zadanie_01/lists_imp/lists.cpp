@@ -1,20 +1,23 @@
 #include "lists.h"
 #include <stdarg.h>
 
-Lists::Lists()
+template <typename T>
+Lists<T>::Lists()
 {
     initiate();
 }
 
-Lists::Lists(...)
+template <typename T>
+Lists<T>::Lists(T first, ...)
 {
     initiate();
 
     va_list ap;
-    va_start(ap);
+    va_start(ap, first);
 }
 
-Lists::initiate()
+template <typename T>
+void Lists<T>::initiate()
 {
     head.prev = nullptr;
     head.next = nullptr;
@@ -22,7 +25,8 @@ Lists::initiate()
     tail.prev = nullptr;
 }
 
-Lists::~Lists()
+template <typename T>
+Lists<T>::~Lists()
 {
     Node *curr = head.next;
     while (curr->next != nullptr)
@@ -34,9 +38,10 @@ Lists::~Lists()
     delete curr;
 }
 
-Lists::Node *Lists::newNode(int value, Node *prev = nullptr)
+template <typename T>
+Lists<T>::Node *Lists<T>::newNode(T value, Node *prev = nullptr)
 {
-    Lists::Node *x = new Lists::Node;
+    Lists<T>::Node *x = new Lists<T>::Node;
     x->value = value;
     x->prev = prev;
     x->next = newNode(value, x);
