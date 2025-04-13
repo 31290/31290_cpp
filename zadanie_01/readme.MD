@@ -40,4 +40,4 @@
 
   - Wykonanie prezentacji na zajęcia.
 
-  - 4 tygodnie, czyli rozliczenie na zajęciach dnia 11.04.2025 r.
+  - 6 tygodni, czyli rozliczenie na zajęciach dnia 25.04.2025 r.
