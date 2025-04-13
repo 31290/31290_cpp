@@ -3,5 +3,6 @@
 
 int main()
 {
-    std::cout << "Hello World" << std::endl;
+    Lists<int> List(1, 2, 3);
+
 }

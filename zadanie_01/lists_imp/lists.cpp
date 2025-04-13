@@ -1,5 +1,4 @@
 #include "lists.h"
-#include <stdarg.h>
 
 template <typename T>
 Lists<T>::Lists()
@@ -8,21 +7,22 @@ Lists<T>::Lists()
 }
 
 template <typename T>
-Lists<T>::Lists(T first, ...)
+Lists<T>::Lists(T first)
 {
     initiate();
+}
 
-    va_list ap;
-    va_start(ap, first);
+template <typename T>
+Lists<T>::Lists(Args... args)
+{
+    initiate();
 }
 
 template <typename T>
 void Lists<T>::initiate()
 {
-    head.prev = nullptr;
     head.next = nullptr;
     tail.next = nullptr;
-    tail.prev = nullptr;
 }
 
 template <typename T>
@@ -47,3 +47,20 @@ Lists<T>::Node *Lists<T>::newNode(T value, Node *prev = nullptr)
     x->next = newNode(value, x);
     return x;
 }
+
+// #include <stdarg.h>
+// template <typename T>
+// Lists<T>::Lists(T first, ...)
+// {
+//     initiate();
+
+//     va_list ap;
+//     va_start(ap, first);
+
+//     T arg = first;
+//     while (arg != NULL)
+//     {
+//         push_back(arg);
+//         arg = va_arg(ap, T);
+//     }
+// }

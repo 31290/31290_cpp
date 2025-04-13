@@ -3,7 +3,8 @@ class Lists
 {
 public:
     Lists();
-    Lists(T first, ...);
+    Lists(T first);
+    template <typename... Args> Lists(...);
     ~Lists();
     void push_front(T val);
     void push_back(T val);
@@ -12,7 +13,7 @@ public:
     void front();
     void back();
 
-    Lists<T> operator+=(T val);
+    Lists<T> operator=(T val);
 
 private:
     struct Node
@@ -22,7 +23,7 @@ private:
     };
     Node head;
     Node tail;
-    Node *newNode(T value, Node *prev);
+    Node *newNode(T value, Node *n=nullptr);
     void deleteNode();
     void initiate();
 };
@@ -64,3 +65,5 @@ public:
 private:
     void updateCycle(){};
 };
+
+#include "lists.cpp"
