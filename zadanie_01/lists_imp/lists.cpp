@@ -1,32 +1,28 @@
 #include "lists.h"
 
 template <typename T>
-Lists<T>::Lists()
+Scarlet::List<T>::List()
 {
     initiate();
 }
 
+
 template <typename T>
-Lists<T>::Lists(T first)
+template <typename... Args>
+Scarlet::List<T>::List(Args... args)
 {
-    initiate();
+    // do the logic
 }
 
 template <typename T>
-Lists<T>::Lists(Args... args)
-{
-    initiate();
-}
-
-template <typename T>
-void Lists<T>::initiate()
+void Scarlet::List<T>::initiate()
 {
     head.next = nullptr;
     tail.next = nullptr;
 }
 
 template <typename T>
-Lists<T>::~Lists()
+Scarlet::List<T>::~List()
 {
     Node *curr = head.next;
     while (curr->next != nullptr)
@@ -39,28 +35,11 @@ Lists<T>::~Lists()
 }
 
 template <typename T>
-Lists<T>::Node *Lists<T>::newNode(T value, Node *prev = nullptr)
+Scarlet::List<T>::Node *Scarlet::List<T>::newNode(T value, Node *prev = nullptr)
 {
-    Lists<T>::Node *x = new Lists<T>::Node;
+    List<T>::Node *x = new List<T>::Node;
     x->value = value;
     x->prev = prev;
     x->next = newNode(value, x);
     return x;
 }
-
-// #include <stdarg.h>
-// template <typename T>
-// Lists<T>::Lists(T first, ...)
-// {
-//     initiate();
-
-//     va_list ap;
-//     va_start(ap, first);
-
-//     T arg = first;
-//     while (arg != NULL)
-//     {
-//         push_back(arg);
-//         arg = va_arg(ap, T);
-//     }
-// }
