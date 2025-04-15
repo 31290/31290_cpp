@@ -13,6 +13,7 @@ namespace Scarlet
         void pop_back();
         T front();
         T back();
+        int length;
 
         List<T> operator=(T val);
 
