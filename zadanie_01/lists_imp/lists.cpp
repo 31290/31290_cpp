@@ -48,7 +48,7 @@ template <typename T>
 void Scarlet::List<T>::push_front(T val)
 {
     len++;
-    Node *x = new Node(val, head->next);
+    Node *x = new Node(val, (head==nullptr) ? nullptr : head);
     head = x;
     if (tail == nullptr)
         tail = head;
@@ -58,7 +58,8 @@ template <typename T>
 void Scarlet::List<T>::push_back(T val)
 {
     len++;
-    Node *x = new Node(val, (head == nullptr) ? nullptr : head->next);
+    Node *x = new Node(val);
+    tail->next = x;
     tail = x;
     if (head == nullptr)
         head = tail;
