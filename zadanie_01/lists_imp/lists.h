@@ -1,3 +1,5 @@
+#pragma once
+
 namespace Scarlet
 {
     template <typename T>
@@ -5,28 +7,29 @@ namespace Scarlet
     {
     public:
         List();
-        template <typename... Args> List(Args... args);
+        template <typename... Args>
+        List(Args... args);
         ~List();
         void push_front(T val);
         void push_back(T val);
-        void pop_front();
-        void pop_back();
+        T pop_front();
+        T pop_back();
         T front();
         T back();
-        int length;
+        int size();
 
         List<T> operator=(T val);
 
     private:
+        int len;
         struct Node
         {
             T value;
             Node *next;
+            Node(T value, Node *next = nullptr);
         };
         Node *head;
         Node *tail;
-        Node *newNode(T value, Node *n = nullptr);
-        void deleteNode();
         void initiate();
     };
 
@@ -68,3 +71,5 @@ namespace Scarlet
         void updateCycle() {};
     };
 }
+
+#include "lists.cpp"
