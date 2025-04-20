@@ -4,7 +4,7 @@
 #include <string>
 #include "lists.h"
 
-#define lll 1, 2, 3, 4 //, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+#define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 
 #define REP 100000000
 
@@ -17,7 +17,6 @@
 #define OP_BACK (1 << 6)
 
 int c = 1;
-char x;
 
 void interpretBitMask(unsigned char f)
 {
@@ -47,6 +46,7 @@ void interpretBitMask(unsigned char f)
 
 void getActions(char f)
 {
+    std::cout << "\033[1;35m";
     if (f & OP_PUSH_FRONT)
         std::cout << "OP_PUSH_FRONT ";
     if (f & OP_PUSH_BACK)
@@ -55,7 +55,7 @@ void getActions(char f)
         std::cout << "OP_POP_FRONT ";
     if (f & OP_POP_BACK)
         std::cout << "OP_POP_BACK ";
-    std::cout << c << " times";
+    std::cout << "\033[1;32m" << c << "\033[0m times";
 }
 
 void listOptions()
@@ -63,12 +63,23 @@ void listOptions()
     std::cout << "\nChoose actions:\n0. Only constructor.\n1. Push front\n2. Push back\n3. Pop front\n4. Pop back\n5. Front\n6. Back\n7. Repetition.\n8. End\n9. List options.\n";
 }
 
+template <typename T>
+void dumpList(std::list<T> &List)
+{
+    std::cout << "\033[1;34m{  ";
+    for (const auto &element : List)
+    {
+        std::cout << element << ", ";
+    }
+    std::cout << "\b\b  }\033[0m";
+}
+
 void testScarletList(unsigned char f, bool mask = false)
 {
     if (mask)
         interpretBitMask(f);
 
-    // auto List = Scarlet::List<int>(1, 2, 3);
+    // auto List = Scarlet::List<int>(lll);
     if (!f & FLAG_INPUT)
     {
         auto start = std::chrono::high_resolution_clock::now();
@@ -82,17 +93,26 @@ void testScarletList(unsigned char f, bool mask = false)
                 auto List = Scarlet::List<int>(lll);
                 end = std::chrono::high_resolution_clock::now();
                 duration += end - start;
-                if(c==1){
-                    std::cout << "\nTime taken by the Scarlet list to create a list of ";
-                    List.dump();
-                    std::cout << " " << duration.count() << " ms.\n";
+                if (c == 1)
+                {
+                    std::cout << "\nTime taken by the\033[1;31m Scarlet \033[0mlist to create a list ";
+                    if (List.size() < 100)
+                        List.dump();
+                    std::cout << ": \033[1;33m" << duration.count() << "\033[0m ms.\n";
                 }
                 start = std::chrono::high_resolution_clock::now();
             }
             end = std::chrono::high_resolution_clock::now();
             d += end - start;
-            if (c == 1)
-                std::cout << "Time taken to destroy list " << duration.count() << " ms.";
+        }
+        if (c == 1)
+        {
+            std::cout << "Time taken to destroy the list: \033[1;33m" << d.count() << "\033[0m ms.";
+        }
+        else
+        {
+            std::cout << "\nTime taken by the\033[1;31m Scarlet \033[0mlist to create a list over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() / c << "\033[0m ms.\n";
+            std::cout << "Time taken to destroy the list averaged over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << d.count() / c << "\033[0m ms.\n";
         }
     }
     else
@@ -101,24 +121,32 @@ void testScarletList(unsigned char f, bool mask = false)
         auto List = Scarlet::List<int>(lll);
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
-        std::cout << "\n\nTime taken by the Scarlet list to create a list of ";
-        List.dump();
-        std::cout << " " << duration.count() << " ms\n";
+        std::cout << "\n\nTime taken by the\033[1;31m Scarlet \033[0mlist to create a list ";
+        if (List.size() < 100)
+            List.dump();
+        std::cout << " \033[1;33m" << duration.count() << "\033[0m ms\n";
 
-        start = std::chrono::high_resolution_clock::now();
-        if (f & OP_PUSH_FRONT)
-            for (int i = 0; i < c; ++i)
-                List.push_front(0);
-        if (f & OP_PUSH_BACK)
-            for (int i = 0; i < c; ++i)
-                List.push_back(4);
-        if (f & OP_POP_FRONT)
-            for (int i = 0; i < c; ++i)
-                List.pop_front();
-        if (f & OP_POP_BACK)
-            for (int i = 0; i < c; ++i)
-                List.pop_back();
-
+        int i = 0;
+        try
+        {
+            start = std::chrono::high_resolution_clock::now();
+            if (f & OP_PUSH_FRONT)
+                for (i = 0; i < c; ++i)
+                    List.push_front(i);
+            if (f & OP_PUSH_BACK)
+                for (i = 0; i < c; ++i)
+                    List.push_back(c - i);
+            if (f & OP_POP_FRONT)
+                for (i = 0; i < c; ++i)
+                    List.pop_front();
+            if (f & OP_POP_BACK)
+                for (i = 0; i < c; ++i)
+                    List.pop_back();
+        }
+        catch (const char *x)
+        {
+            std::cout << "\033[1;31mError: " << x << "\033[0m Ending early.\n";
+        }
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
         if (f & OP_FRONT)
@@ -126,13 +154,14 @@ void testScarletList(unsigned char f, bool mask = false)
         if (f & OP_BACK)
             std::cout << "Back: " << List.back() << std::endl;
 
-        std::cout << "Time taken by the Scarlet list to perform\n";
+        std::cout << "Time taken by the\033[1;31m Scarlet \033[0mlist to perform\n";
         getActions(f);
-        std::cout << " was " << duration.count() << " ms ";
+        std::cout << " was \033[1;33m" << duration.count() << "\033[0m ms ";
         if (c != 1)
-            std::cout << " ms which averages to " << duration.count() / c << " ms for all actions" << "\n";
-        std::cout << "and resulted in a list of ";
-        List.dump();
+            std::cout << " which averages to \033[1;35m" << duration.count() / i << "\033[0m ms for all actions" << "\n";
+        std::cout << "and resulted in a list ";
+        if (List.size() < 100)
+            List.dump();
     }
 }
 
@@ -141,62 +170,97 @@ void testStandardList(unsigned char f, bool mask = false)
     if (mask)
         interpretBitMask(f);
 
+    // std::list<int> List{1, 2, 3};
     if (!f & FLAG_INPUT)
     {
         auto start = std::chrono::high_resolution_clock::now();
         auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = end - start;
+        std::chrono::duration<double, std::milli> duration = end - end;
+        std::chrono::duration<double, std::milli> d = end - end;
+        for (int i = 0; i < c; ++i)
         {
-            start = std::chrono::high_resolution_clock::now();
-            std::list<int> List{lll};
+            {
+                start = std::chrono::high_resolution_clock::now();
+                std::list<int> List{lll};
+                end = std::chrono::high_resolution_clock::now();
+                duration += end - start;
+                if (c == 1)
+                {
+                    std::cout << "\nTime taken by the\033[1;36m Standard \033[0mlist to create a list of ";
+
+                    if (List.size() < 100)
+                        dumpList(List);
+                    std::cout << ": \033[1;33m" << duration.count() << "\033[0m ms.\n";
+                }
+                start = std::chrono::high_resolution_clock::now();
+            }
             end = std::chrono::high_resolution_clock::now();
-            duration = end - start;
-            start = std::chrono::high_resolution_clock::now();
+            d += end - start;
         }
-        end = std::chrono::high_resolution_clock::now();
-        std::cout << "Time taken by the Standard list to create a list of {1, 2, 3}: " << duration.count() << " ms\n";
-        duration = end - start;
-        std::cout << "Time taken to destroy the Standard list of {1, 2, 3}: " << duration.count() << " ms\n\n";
+        if (c == 1)
+        {
+            std::cout << "Time taken to destroy the list: \033[1;33m" << d.count() << "\033[0m ms.";
+        }
+        else
+        {
+            std::cout << "\nTime taken by the\033[1;36m Standard \033[0mlist to create a list over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() / c << "\033[0m ms.\n";
+            std::cout << "Time taken to destroy the list averaged over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << d.count() / c << "\033[0m ms.\n";
+        }
     }
     else
     {
-        auto s = std::chrono::high_resolution_clock::now();
-        std::list<int> List{1, 2, 3};
-        auto e = std::chrono::high_resolution_clock::now();
         auto start = std::chrono::high_resolution_clock::now();
-        if (f & OP_PUSH_FRONT)
-            for (int i = 0; i < c; ++i)
-                List.push_front(0);
-        if (f & OP_PUSH_BACK)
-            for (int i = 0; i < c; ++i)
-                List.push_back(4);
-        if (f & OP_POP_FRONT)
-            for (int i = 0; i < c; ++i)
-                List.pop_front();
-        if (f & OP_POP_BACK)
-            for (int i = 0; i < c; ++i)
-                List.pop_back();
-
+        std::list<int> List{lll};
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
-        std::chrono::duration<double, std::milli> d = e - s;
+        std::cout << "\n\nTime taken by the\033[1;36m Standard \033[0mlist to create a list of ";
 
+        if (List.size() < 100)
+            dumpList(List);
+        std::cout << " \033[1;33m" << duration.count() << "\033[0m ms\n";
+
+        int i = 0;
+        try
+        {
+            start = std::chrono::high_resolution_clock::now();
+            if (f & OP_PUSH_FRONT)
+                for (i = 0; i < c; ++i)
+                    List.push_front(i);
+            if (f & OP_PUSH_BACK)
+                for (i = 0; i < c; ++i)
+                    List.push_back(c - i);
+            if (f & OP_POP_FRONT)
+                for (i = 0; i < c; ++i)
+                    List.pop_front();
+            if (f & OP_POP_BACK)
+                for (i = 0; i < c; ++i)
+                    List.pop_back();
+        }
+        catch (const char *x)
+        {
+            std::cout << "\033[1;31mError: " << x << "\033[0m Ending early.\n";
+        }
+        end = std::chrono::high_resolution_clock::now();
+        duration = end - start;
         if (f & OP_FRONT)
             std::cout << "Front: " << List.front() << std::endl;
         if (f & OP_BACK)
             std::cout << "Back: " << List.back() << std::endl;
 
-        std::cout << "\nTime taken by the Standard list to create a list of {1, 2, 3}: " << d.count() << " ms\n";
-
-        std::cout << "\nTime taken by the Standard list to perform actions like\n";
+        std::cout << "Time taken by the\033[1;36m Standard \033[0mlist to perform\n";
         getActions(f);
-        std::cout << c << " times\nWas " << duration.count() << " ms which averages to " << duration.count() / c << " ms for all actions" << "\n";
+        std::cout << " was \033[1;33m" << duration.count() << "\033[0m ms ";
+        if (c != 1)
+            std::cout << " which averages to \033[1;35m" << duration.count() / i << "\033[0m ms for all actions" << "\n";
+        std::cout << "and resulted in a list of ";
+        if (List.size() < 100)
+            dumpList(List);
     }
 }
 
 void allStandardTest()
 {
-    std::cout << "chuj";
+    std::cout << "\n\n\n\n";
     unsigned char f = 0;
     testStandardList(f);
     f ^= OP_PUSH_FRONT;
@@ -227,7 +291,7 @@ void allScarletTest()
     f = 0;
     f ^= OP_POP_BACK;
     testScarletList(f);
-    std::cout << "kurwa";
+    std::cout << "\n\n\033[1;31mScarlet\033[0m tests finished.";
 }
 
 char createBitMask()
@@ -281,11 +345,16 @@ char createBitMask()
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc > 1)
+    {
+        c = atoi(argv[1]);
+        std::cout << "Number of repetitions set to: \033[1;32m" << c << "\033[0m";
+    }
     char ff;
     std::cout << "\nChoose library:\n";
-    std::cout << "0. Scarlet library.\n1. Standard library.\n2. Compare libraries.\n3. Exit.\n";
+    std::cout << "0.\033[1;31m Scarlet \033[0mlibrary.\n1.\033[1;36m Standard \033[0mlibrary.\n2. Compare libraries.\n3. \033[1;31mExit.\033[0m\n";
     switch (std::cin.get())
     {
     case '0':
@@ -300,9 +369,9 @@ int main()
         std::cout << "Compare libraries.\n";
         ff = createBitMask();
         interpretBitMask(ff);
-        std::cout << "\nStandard library:";
+        std::cout << "\n\n\033[1;36mStandard library:\033[0m";
         testStandardList(ff);
-        std::cout << "\nScarlet library:";
+        std::cout << "\n\n\033[1;31mScarlet library:\033[0m";
         testScarletList(ff);
         return 1;
         break;
@@ -310,6 +379,12 @@ int main()
         return 0;
     case '4':
         allScarletTest();
+        allStandardTest();
+        return 2;
+    case '5':
+        allScarletTest();
+        return 2;
+    case '6':
         allStandardTest();
         return 2;
     default:
@@ -342,7 +417,7 @@ int main()
             sum += duration.count();
         }
         // std::cout << list.size();
-        std::cout << "Average time taken by the Standard list to create a list of {1, 2, 3}: " << sum / REP << " ms\n\n";
+        std::cout << "Average time taken by the\033[1;36m Standard \033[0mlist to create a list of {1, 2, 3}: " << sum / REP << " ms\n\n";
 
         sum = 0;
         for (int i = 0; i < REP; i++)
@@ -354,5 +429,5 @@ int main()
             sum += duration.count();
         }
         // std::cout << List.size();
-        std::cout << "Average time taken by the Scarlet list to create a list of {1, 2, 3}: " << sum / REP << " ms\n\n"; /**/
+        std::cout << "Average time taken by the\033[1;31m Scarlet \033[0mlist to create a list of {1, 2, 3}: " << sum / REP << " ms\n\n"; /**/
 }

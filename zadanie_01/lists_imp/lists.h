@@ -18,6 +18,7 @@ namespace Scarlet
         T back();
         int size();
         void dump();
+        bool empty();
 
         List<T> operator=(T val);
 

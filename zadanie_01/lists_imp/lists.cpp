@@ -51,13 +51,13 @@ template <typename T>
 void Scarlet::List<T>::dump()
 {
     Node *n = head;
-    std::cout << "{ ";
+    std::cout << "\033[1;34m{  ";
     while (n != nullptr)
     {
         std::cout << n->value << ", ";
         n = n->next;
     }
-    std::cout << "\b\b }";
+    std::cout << "\b\b  }\033[0m";
 }
 
 template <typename T>
@@ -88,12 +88,14 @@ T Scarlet::List<T>::pop_front()
     if (head == nullptr)
         throw "Empty list.";
     T t = head->value;
-    if(head==tail)
+    if (head == tail)
+    {
         delete head;
         head = nullptr;
         tail = nullptr;
         len--;
         return t;
+    }
     Node *n = head->next;
     delete head;
     head = n;
@@ -107,15 +109,15 @@ T Scarlet::List<T>::pop_back()
     if (tail == nullptr)
         throw "Empty list.";
     T t = tail->value;
-    if(head == tail)
+    if (head == tail)
     {
-        delete head;
+        delete tail;
         head = nullptr;
         tail = nullptr;
         len--;
         return t;
     }
-    Node *n = head->next;
+    Node *n = head;
     while (n->next != tail)
     {
         n = n->next;
@@ -141,6 +143,11 @@ T Scarlet::List<T>::back()
     if (tail != nullptr)
         return head->value;
     throw "Empty list.";
+}
+
+template <typename T>
+bool Scarlet::List<T>::empty(){
+    return len==0;
 }
 
 template <typename T>
