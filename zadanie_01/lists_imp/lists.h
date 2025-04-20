@@ -17,6 +17,7 @@ namespace Scarlet
         T front();
         T back();
         int size();
+        void dump();
 
         List<T> operator=(T val);
 

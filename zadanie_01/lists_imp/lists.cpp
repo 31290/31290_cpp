@@ -6,12 +6,12 @@ Scarlet::List<T>::List()
     initiate();
 }
 
-
 template <typename T>
 template <typename... Args>
 Scarlet::List<T>::List(Args... args)
 {
     initiate();
+
     (push_back(args), ...);
     // KURWA MAĆĆĆĆĆĆĆĆĆĆ
 }
@@ -27,15 +27,18 @@ void Scarlet::List<T>::initiate()
 template <typename T>
 Scarlet::List<T>::~List()
 {
+    // std::cout << "K";
     Node *curr = head;
+    // std::cout << "U";
     while (curr != nullptr)
     {
+        // std::cout << "R";
         Node *n = curr->next;
         delete curr;
         curr = n;
     }
-    delete head;
-    delete tail;
+    // std::cout << "W";
+    // std::cout << "A";
 }
 
 template <typename T>
@@ -45,10 +48,23 @@ int Scarlet::List<T>::size()
 }
 
 template <typename T>
+void Scarlet::List<T>::dump()
+{
+    Node *n = head;
+    std::cout << "{ ";
+    while (n != nullptr)
+    {
+        std::cout << n->value << ", ";
+        n = n->next;
+    }
+    std::cout << "\b\b }";
+}
+
+template <typename T>
 void Scarlet::List<T>::push_front(T val)
 {
     len++;
-    Node *x = new Node(val, (head==nullptr) ? nullptr : head);
+    Node *x = new Node(val, (head == nullptr) ? nullptr : head);
     head = x;
     if (tail == nullptr)
         tail = head;
@@ -58,8 +74,9 @@ template <typename T>
 void Scarlet::List<T>::push_back(T val)
 {
     len++;
-    Node *x = new Node(val);
-    tail->next = x;
+    Node *x = new Node(val, nullptr);
+    if (tail != nullptr)
+        tail->next = x;
     tail = x;
     if (head == nullptr)
         head = tail;
@@ -70,7 +87,13 @@ T Scarlet::List<T>::pop_front()
 {
     if (head == nullptr)
         throw "Empty list.";
-    T t = front();
+    T t = head->value;
+    if(head==tail)
+        delete head;
+        head = nullptr;
+        tail = nullptr;
+        len--;
+        return t;
     Node *n = head->next;
     delete head;
     head = n;
@@ -83,14 +106,23 @@ T Scarlet::List<T>::pop_back()
 {
     if (tail == nullptr)
         throw "Empty list.";
-    T t = back();
-    delete tail;
+    T t = tail->value;
+    if(head == tail)
+    {
+        delete head;
+        head = nullptr;
+        tail = nullptr;
+        len--;
+        return t;
+    }
     Node *n = head->next;
-    while(n->next != tail)
+    while (n->next != tail)
     {
         n = n->next;
     }
+    delete tail;
     tail = n;
+    tail->next = nullptr;
     len--;
     return t;
 }
@@ -98,16 +130,18 @@ T Scarlet::List<T>::pop_back()
 template <typename T>
 T Scarlet::List<T>::front()
 {
-    if (head != nullptr) return head->value;
+    if (head != nullptr)
+        return head->value;
     throw "Empty list.";
 }
 
 template <typename T>
 T Scarlet::List<T>::back()
 {
-    if (tail != nullptr) return head->value;
+    if (tail != nullptr)
+        return head->value;
     throw "Empty list.";
 }
 
 template <typename T>
-Scarlet::List<T>::Node::Node(T value, Node *next) : value(value), next(next) {};
+Scarlet::List<T>::Node::Node(T value, Node *next) : value(value), next(next){};
