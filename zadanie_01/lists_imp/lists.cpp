@@ -27,18 +27,13 @@ void Scarlet::List<T>::initiate()
 template <typename T>
 Scarlet::List<T>::~List()
 {
-    // std::cout << "K";
     Node *curr = head;
-    // std::cout << "U";
     while (curr != nullptr)
     {
-        // std::cout << "R";
         Node *n = curr->next;
         delete curr;
         curr = n;
     }
-    // std::cout << "W";
-    // std::cout << "A";
 }
 
 template <typename T>
@@ -48,7 +43,7 @@ int Scarlet::List<T>::size()
 }
 
 template <typename T>
-void Scarlet::List<T>::dump()
+void Scarlet::List<T>::dumpContent()
 {
     Node *n = head;
     std::cout << "\033[1;34m{  ";
@@ -58,6 +53,13 @@ void Scarlet::List<T>::dump()
         n = n->next;
     }
     std::cout << "\b\b  }\033[0m";
+}
+
+template <typename T>
+void Scarlet::List<T>::dump()
+{
+    dumpContent();
+    std::cout << "\033[1;34m(Size:" << len << ")\033[0m";
 }
 
 template <typename T>
@@ -152,3 +154,6 @@ bool Scarlet::List<T>::empty(){
 
 template <typename T>
 Scarlet::List<T>::Node::Node(T value, Node *next) : value(value), next(next){};
+
+template <typename T>
+Scarlet::twoWayList<T>::Node::Node(T value, Node *next, Node *prev) : value(value), next(next), prev(prev){};

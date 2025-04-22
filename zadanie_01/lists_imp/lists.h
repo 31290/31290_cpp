@@ -17,6 +17,7 @@ namespace Scarlet
         T front();
         T back();
         int size();
+        void dumpContent();
         void dump();
         bool empty();
 
@@ -53,8 +54,8 @@ namespace Scarlet
             T value;
             Node *next;
             Node *prev;
+            Node(T value, Node *next = nullptr, Node *prev=nullptr);
         };
-        Node *newNode(T value, Node *prev);
     };
 
     template <typename T>
