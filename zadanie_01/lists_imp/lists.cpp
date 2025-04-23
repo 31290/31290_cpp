@@ -42,6 +42,7 @@ int Scarlet::List<T>::size()
     return len;
 }
 
+#ifdef ENABLE_DUMP
 template <typename T>
 void Scarlet::List<T>::dumpContent()
 {
@@ -61,6 +62,11 @@ void Scarlet::List<T>::dump()
     dumpContent();
     std::cout << "\033[1;34m(Size:" << len << ")\033[0m";
 }
+#endif
+
+#ifndef ENABLE_DUMP
+#warning "Dump functions are unavailable."
+#endif
 
 template <typename T>
 void Scarlet::List<T>::push_front(T val)
