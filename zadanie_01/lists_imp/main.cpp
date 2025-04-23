@@ -4,6 +4,8 @@
 #include <string>
 #define ENABLE_DUMP
 #include "lists.h"
+#include <functional>
+#include <type_traits>
 
 #define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 
@@ -16,8 +18,6 @@
 #define OP_POP_BACK (1 << 4)
 #define OP_FRONT (1 << 5)
 #define OP_BACK (1 << 6)
-
-
 
 int c = 1;
 
@@ -87,6 +87,46 @@ void dumpList(std::list<T> &List)
     std::cout << "\033[1;34m(Size:" << List.size() << ")\033[0m";
 }
 
+template <typename list>
+void constructor(const char *label, std::function<list()> constr)
+{
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<long long, std::nano> duration = end - end;
+    std::chrono::duration<long long, std::nano> d = end - end;
+    for (int i = 0; i < c; ++i)
+    {
+        {
+            start = std::chrono::high_resolution_clock::now();
+            list List = constr();
+            end = std::chrono::high_resolution_clock::now();
+            duration += end - start;
+            if (c == 1)
+            {
+                std::cout << "\nTime taken by the\033[1;31m " << label << " \033[0mlist to create a list ";
+                if (List.size() < 100)
+                    if constexpr (requires { List.dump(); })
+                        List.dump();
+                    else
+                        dumpList(List);
+                std::cout << ": \033[1;33m" << duration.count() << "\033[0m ns.\n";
+            }
+            start = std::chrono::high_resolution_clock::now();
+        }
+        end = std::chrono::high_resolution_clock::now();
+        d += end - start;
+    }
+    if (c == 1)
+    {
+        std::cout << "Time taken to destroy the list: \033[1;33m" << d.count() << "\033[0m ns.";
+    }
+    else
+    {
+        std::cout << "\nTime taken by the\033[1;3" << (label == "Scarlet" ? 1 : 6) << "m " << label << " \033[0mlist to create a list over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count()/1000000.f << "\033[0m ms averaged to: \033[1;33m" << duration.count() / c << "\033[0m ns.\n";
+        std::cout << "Time taken to destroy the list averaged over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m"  << d.count()/1000000.f << "\033[0m ms averaged to: \033[1;33m" << d.count() / c << "\033[0m ns.\n";
+    }
+}
+
 void testScarletList(unsigned char f, bool mask = false)
 {
     if (mask)
@@ -95,6 +135,9 @@ void testScarletList(unsigned char f, bool mask = false)
     // Scarlet::List<int> List = Scarlet::List<int>(lll);
     if (!f & FLAG_INPUT)
     {
+        constructor<Scarlet::List<int>>("Scarlet", []
+                                        { return Scarlet::List<int>(lll); });
+        /*
         auto start = std::chrono::high_resolution_clock::now();
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - end;
@@ -126,7 +169,7 @@ void testScarletList(unsigned char f, bool mask = false)
         {
             std::cout << "\nTime taken by the\033[1;31m Scarlet \033[0mlist to create a list over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() / c << "\033[0m ms.\n";
             std::cout << "Time taken to destroy the list averaged over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << d.count() / c << "\033[0m ms.\n";
-        }
+        }/**/
     }
     else
     {
@@ -199,6 +242,9 @@ void testStandardList(unsigned char f, bool mask = false)
     // std::list<int> List{lll};
     if (!f & FLAG_INPUT)
     {
+        constructor<std::list<int>>("Standard", []
+                                        { return std::list<int>{lll}; });
+        /*
         auto start = std::chrono::high_resolution_clock::now();
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - end;
@@ -230,7 +276,7 @@ void testStandardList(unsigned char f, bool mask = false)
         {
             std::cout << "\nTime taken by the\033[1;36m Standard \033[0mlist to create a list over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() / c << "\033[0m ms.\n";
             std::cout << "Time taken to destroy the list averaged over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << d.count() / c << "\033[0m ms.\n";
-        }
+        }/**/
     }
     else
     {
