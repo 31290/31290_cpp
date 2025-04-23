@@ -2,6 +2,7 @@
 #include <list>
 #include <chrono>
 #include <string>
+#define ENABLE_DUMP
 #include "lists.h"
 
 #define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
@@ -15,6 +16,8 @@
 #define OP_POP_BACK (1 << 4)
 #define OP_FRONT (1 << 5)
 #define OP_BACK (1 << 6)
+
+
 
 int c = 1;
 
@@ -432,42 +435,4 @@ int main(int argc, char *argv[])
         return -1;
         break;
     } /**/
-
-    /*
-    for (int i = 0; i < 10; ++i)
-    {
-        _sleep(300);
-        std::cout << "\r" << std::string(i, '.');
-    }
-    std::cout << "\n";/**/
-
-    // pierdole to kurwa
-    /*
-        double sum = 0;
-        auto start = std::chrono::high_resolution_clock::now();
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = end - start;
-
-        for (int i = 0; i < REP; i++)
-        {
-            start = std::chrono::high_resolution_clock::now();
-            std::list<int> list{lll};
-            end = std::chrono::high_resolution_clock::now();
-            duration = end - start;
-            sum += duration.count();
-        }
-        // std::cout << list.size();
-        std::cout << "Average time taken by the\033[1;36m Standard \033[0mlist to create a list of {1, 2, 3}: " << sum / REP << " ms\n\n";
-
-        sum = 0;
-        for (int i = 0; i < REP; i++)
-        {
-            start = std::chrono::high_resolution_clock::now();
-            auto List = Scarlet::List<int>(1, 2, 3);
-            end = std::chrono::high_resolution_clock::now();
-            duration = end - start;
-            sum += duration.count();
-        }
-        // std::cout << List.size();
-        std::cout << "Average time taken by the\033[1;31m Scarlet \033[0mlist to create a list of {1, 2, 3}: " << sum / REP << " ms\n\n"; /**/
 }
