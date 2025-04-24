@@ -13,7 +13,6 @@ Scarlet::List<T>::List(Args... args)
     initiate();
 
     (push_back(args), ...);
-    // KURWA MAĆĆĆĆĆĆĆĆĆĆ
 }
 
 template <typename T>
@@ -154,12 +153,70 @@ T Scarlet::List<T>::back()
 }
 
 template <typename T>
-bool Scarlet::List<T>::empty(){
-    return len==0;
+bool Scarlet::List<T>::empty()
+{
+    return len == 0;
 }
 
 template <typename T>
 Scarlet::List<T>::Node::Node(T value, Node *next) : value(value), next(next){};
+
+// twoWayList here.
+
+template <typename T>
+template <typename... Args>
+Scarlet::twoWayList<T>::twoWayList(Args... args)
+{
+    initiate();
+
+    (push_back(args), ...);
+}
+
+template <typename T>
+void Scarlet::twoWayList<T>::push_front(T val)
+{
+    this->len++;
+    Node *x = new Node(val, head, nullptr);
+    if (head != nullptr)
+        head->prev = x;
+    head = x;
+    if (tail == nullptr)
+        tail = head;
+}
+
+template <typename T>
+void Scarlet::twoWayList<T>::push_back(T val)
+{
+    this->len++;
+    Node *x = new Node(val, nullptr, tail);
+    if (tail != nullptr)
+        tail->next = x;
+    tail = x;
+    if (head == nullptr)
+        head = tail;
+}
+
+template <typename T>
+T Scarlet::twoWayList<T>::pop_back()
+{
+    if (tail == nullptr)
+        throw "Empty list.";
+    T t = tail->value;
+    if (head == tail)
+    {
+        delete tail;
+        head = nullptr;
+        tail = nullptr;
+        this->len--;
+        return t;
+    }
+    Node *n = tail->prev;
+    delete tail;
+    tail = n;
+    tail->next = nullptr;
+    this->len--;
+    return t;
+}
 
 template <typename T>
 Scarlet::twoWayList<T>::Node::Node(T value, Node *next, Node *prev) : value(value), next(next), prev(prev){};

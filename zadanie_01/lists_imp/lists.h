@@ -23,7 +23,7 @@ namespace Scarlet
 
         List<T> operator=(T val);
 
-    private:
+    protected:
         int len;
         struct Node
         {
@@ -40,21 +40,20 @@ namespace Scarlet
     class twoWayList : public List<T>
     {
     public:
-        /*there will be a two-way list here
-                   x
-        .-. _______|
-        |=|/     /  \
-        | |_____|_""_|
-        |_|_[X]_|____|
-        */
+        template <typename... Args>
+        twoWayList(Args... args);
+        ~twoWayList();
+        void push_front(T val);
+        void push_back(T val);
+        T pop_back();
 
-    private:
+    protected:
         struct Node
         {
             T value;
             Node *next;
             Node *prev;
-            Node(T value, Node *next = nullptr, Node *prev=nullptr);
+            Node(T value, Node *next = nullptr, Node *prev = nullptr);
         };
     };
 

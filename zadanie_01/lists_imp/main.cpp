@@ -18,6 +18,7 @@
 #define OP_BACK (1 << 6)
 
 int c = 1;
+int a = 0;
 
 void interpretBitMask(unsigned char f)
 {
@@ -103,7 +104,7 @@ void constructor(const char *label, std::function<list()> constr)
             duration += end - start;
             if (c == 1)
             {
-                std::cout << "\nTime taken by the\033[1;31m " << label << " \033[0mlist to create a list of size" << t;
+                std::cout << "\nTime taken by the " << label << " list to create a list of size" << t;
                 if (List.size() < 100)
                     if constexpr (requires { List.dump(); })
                         List.dump();
@@ -122,7 +123,7 @@ void constructor(const char *label, std::function<list()> constr)
     }
     else
     {
-        std::cout << "\nTime taken by the\033[1;3" << (label == "Scarlet" ? 1 : 6) << "m " << label << " \033[0mlist to create a list of size " << t << " over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count() / 1000000.f << "\033[0m ms averaged to: \033[1;35m" << duration.count() / c << "\033[0m ns.\n";
+        std::cout << "\nTime taken by the " << label << " list to create a list of size " << t << " over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count() / 1000000.f << "\033[0m ms averaged to: \033[1;35m" << duration.count() / c << "\033[0m ns.\n";
         std::cout << "Time taken to destroy the list averaged over \033[1;32m" << c << "\033[0m repetitions: \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << d.count() / 1000000.f << "\033[0m ms averaged to: \033[1;35m" << d.count() / c << "\033[0m ns.\n";
     }
 }
@@ -140,7 +141,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         start = std::chrono::high_resolution_clock::now();
         list List = constr();
         end = std::chrono::high_resolution_clock::now();
-        std::cout << "\n\nTime taken by the\033[1;3" << (label == "Scarlet" ? 1 : 6) << "m " << label << " \033[0mlist to create a list ";
+        std::cout << "\n\nTime taken by the " << label << " list to create a list ";
         if (List.size() < 100)
             if constexpr (requires { List.dump(); })
                 List.dump();
@@ -202,7 +203,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         if (f & OP_BACK)
             std::cout << "Back: " << List.back() << std::endl;
 
-        std::cout << "Time taken by the\033[1;3" << (label == "Scarlet" ? 1 : 6) << "m " << label << " \033[0mlist to perform\n";
+        std::cout << "Time taken by the " << label << " list to perform\n";
         getActions(f, i);
         std::cout << " was \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count() / 1000000.f << "\033[0m ms ";
         if (c != 1)
@@ -228,11 +229,12 @@ void testScarletList(unsigned char f, bool mask = false)
     if (mask)
         interpretBitMask(f);
 
+    const char *label = "\033[1;31mScarlet\033[0m";
     // Scarlet::List<int> List = Scarlet::List<int>(lll);
     if (!f & FLAG_INPUT)
     {
         constructor<Scarlet::List<int>>(
-            "Scarlet",
+            label,
             []
             {
                 return Scarlet::List<int>(lll);
@@ -241,7 +243,7 @@ void testScarletList(unsigned char f, bool mask = false)
     else
     {
         perform<Scarlet::List<int>>(
-            "Scarlet",
+            label,
             f,
             []
             {
@@ -250,17 +252,45 @@ void testScarletList(unsigned char f, bool mask = false)
     }
 }
 
-void testStandardList(unsigned char f, bool mask = false)
+void testTwoWayScarletList(unsigned char f, bool mask = false)
 {
-
     if (mask)
         interpretBitMask(f);
 
+    const char *label = "\033[1;32mScarlet Two Way\033[0m";
+    // Scarlet::List<int> List = Scarlet::List<int>(lll);
+    if (!f & FLAG_INPUT)
+    {
+        constructor<Scarlet::twoWayList<int>>(
+            label,
+            []
+            {
+                return Scarlet::twoWayList<int>(lll);
+            });
+    }
+    else
+    {
+        perform<Scarlet::twoWayList<int>>(
+            label,
+            f,
+            []
+            {
+                return Scarlet::twoWayList<int>(lll);
+            });
+    }
+}
+
+void testStandardList(unsigned char f, bool mask = false)
+{
+    if (mask)
+        interpretBitMask(f);
+
+    const char *label = "\033[1;36mStandard\033[0m";
     // std::list<int> List{lll};
     if (!f & FLAG_INPUT)
     {
         constructor<std::list<int>>(
-            "Standard",
+            label,
             []
             {
                 return std::list<int>{lll};
@@ -269,7 +299,7 @@ void testStandardList(unsigned char f, bool mask = false)
     else
     {
         perform<std::list<int>>(
-            "Standard",
+            label,
             f,
             []
             {
@@ -356,9 +386,15 @@ char createBitMask()
             listOptions();
             break;
         case 'a':
-            allScarletTest();
-            allStandardTest();
-            break;
+            if (a & FLAG_INPUT)
+                allScarletTest();
+            if (a & OP_PUSH_FRONT)
+                allStandardTest();
+            if (a & OP_PUSH_BACK)
+                a = 0;
+            if (a & OP_POP_FRONT)
+                a = 0;
+            throw "Done testing.";
         default:
             std::cout << "\r";
             break;
@@ -376,41 +412,52 @@ int main(int argc, char *argv[])
     char ff;
     std::cout << "\nChoose library:\n";
     std::cout << "0.\033[1;31m Scarlet \033[0mlibrary.\n1.\033[1;36m Standard \033[0mlibrary.\n2. Compare libraries.\n3. \033[1;31mExit.\033[0m\n";
-    switch (std::cin.get())
+    try
     {
-    case '0':
-        testScarletList(createBitMask(), true);
-        return 1;
-        break;
-    case '1':
-        testStandardList(createBitMask(), true);
-        return 1;
-        break;
-    case '2':
-        std::cout << "Compare libraries.\n";
-        ff = createBitMask();
-        interpretBitMask(ff);
-        std::cout << "\n\n\033[1;36mStandard library:\033[0m";
-        testStandardList(ff);
-        std::cout << "\n\n\033[1;31mScarlet library:\033[0m";
-        testScarletList(ff);
-        return 1;
-        break;
-    case '3':
-        return 0;
-    case '4':
-        allScarletTest();
-        allStandardTest();
-        return 2;
-    case '5':
-        allScarletTest();
-        return 2;
-    case '6':
-        allStandardTest();
-        return 2;
-    default:
-        std::cout << "Invalid parameter.\n";
-        return -1;
-        break;
-    } /**/
+        switch (std::cin.get())
+        {
+        case '0':
+            a ^= FLAG_INPUT;
+            testScarletList(createBitMask(), true);
+            return 1;
+            break;
+        case '1':
+            a ^= OP_PUSH_FRONT;
+            testStandardList(createBitMask(), true);
+            return 1;
+            break;
+        case '2':
+            a ^= FLAG_INPUT;
+            a ^= OP_PUSH_FRONT;
+            std::cout << "Compare libraries.\n";
+            ff = createBitMask();
+            interpretBitMask(ff);
+            std::cout << "\n\n\033[1;36mStandard library:\033[0m";
+            testStandardList(ff);
+            std::cout << "\n\n\033[1;31mScarlet library:\033[0m";
+            testScarletList(ff);
+            return 1;
+            break;
+        case '3':
+            return 0;
+        case '4':
+            allScarletTest();
+            allStandardTest();
+            return 2;
+        case '5':
+            allScarletTest();
+            return 2;
+        case '6':
+            allStandardTest();
+            return 2;
+        default:
+            std::cout << "Invalid parameter.\n";
+            return -1;
+            break;
+        } /**/
+    }
+    catch (const char *e)
+    {
+        std::cout << "\n\033[1;32m" << e << "\033[0m\n";
+    }
 }
