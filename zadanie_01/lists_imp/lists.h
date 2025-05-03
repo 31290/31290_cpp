@@ -64,12 +64,13 @@ namespace Scarlet
     public:
         template <typename... Args>
         cyclicList(Args... args);
-        /*
         ~cyclicList();
-        /**/
         void push_front(T val);
         void push_back(T val);
         T pop_back();
+        T pop_front();
+        void dumpContent();
+        void dump();
 
         using typename List<T>::Node;
         using List<T>::size;
@@ -77,9 +78,10 @@ namespace Scarlet
         using List<T>::tail;
         using List<T>::len;
         using List<T>::initiate;
+        using List<T>::empty;
 
     protected:
-        void updateCycle() {};
+        void updateCycle();
     };
 }
 

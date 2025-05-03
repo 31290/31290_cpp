@@ -249,19 +249,91 @@ Scarlet::cyclicList<T>::cyclicList(Args... args)
 }
 
 template <typename T>
+Scarlet::cyclicList<T>::~cyclicList()
+{
+    Node *curr = head;
+    if (tail) delete tail->next;
+    while (curr != tail)
+    {
+        Node *n = curr->next;
+        delete curr;
+        curr = n;
+    }
+    delete tail;
+}
+
+template <typename T>
+void Scarlet::cyclicList<T>::push_front(T val)
+{
+    len++;
+    Node *x = new Node(val, (head == nullptr) ? nullptr : head);
+    head = x;
+    if (tail == nullptr)
+        tail = head;
+    else
+        updateCycle();
+}
+
+template <typename T>
 void Scarlet::cyclicList<T>::push_back(T val)
 {
     len++;
-    Node *x = new Node(val, nullptr);
+    Node *x = new Node(val, (head == nullptr) ? nullptr : head);
     if (tail != nullptr)
     {
         tail->next = x;
-        updateCycle();
     }
-
     tail = x;
     if (head == nullptr)
         head = tail;
+}
+
+template <typename T>
+T Scarlet::cyclicList<T>::pop_front()
+{
+    if (head == nullptr)
+        throw "Empty list.";
+    T t = head->value;
+    if (head == tail)
+    {
+        delete head;
+        head = nullptr;
+        tail = nullptr;
+        len--;
+        return t;
+    }
+    Node *n = head->next;
+    delete head;
+    head = n;
+    len--;
+    updateCycle();
+    return t;
+}
+
+template <typename T>
+T Scarlet::cyclicList<T>::pop_back()
+{
+    if (tail == nullptr)
+        throw "Empty list.";
+    T t = tail->value;
+    if (head == tail)
+    {
+        delete tail;
+        head = nullptr;
+        tail = nullptr;
+        len--;
+        return t;
+    }
+    Node *n = head;
+    while (n->next != tail)
+    {
+        n = n->next;
+    }
+    delete tail;
+    tail = n;
+    tail->next = nullptr;
+    len--;
+    return t;
 }
 
 template <typename T>
@@ -269,3 +341,31 @@ void Scarlet::cyclicList<T>::updateCycle()
 {
     tail->next = head;
 }
+
+#ifdef ENABLE_DUMP
+template <typename T>
+void Scarlet::cyclicList<T>::dumpContent()
+{
+    Node *n = head;
+    std::cout << "\033[1;34m{  ";
+    while (n != tail)
+    {
+        std::cout << n->value << ", ";
+        n = n->next;
+    }
+    if (!empty())
+        std::cout << n->value << ", ";
+    std::cout << "\b\b  }\033[0m";
+}
+
+template <typename T>
+void Scarlet::cyclicList<T>::dump()
+{
+    dumpContent();
+    std::cout << "\033[1;34m(Size:" << len << ")\033[0m";
+}
+#endif
+
+#ifndef ENABLE_DUMP
+#warning "Dump functions are unavailable."
+#endif
