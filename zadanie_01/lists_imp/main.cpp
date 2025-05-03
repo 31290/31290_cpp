@@ -8,6 +8,9 @@
 #include <type_traits>
 
 #define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+#define mmmm lll, lll, lll, lll, lll, lll, lll, lll, lll, lll
+#define nnn mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm
+// #define ooo nnn, nnn, nnn, nnn, nnn, nnn, nnn, nnn, nnn, nnn
 
 #define FLAG_INPUT (1 << 0)
 #define OP_PUSH_FRONT (1 << 1)
@@ -237,7 +240,7 @@ void testScarletList(unsigned char f, bool mask = false)
             label,
             []
             {
-                return Scarlet::List<int>(lll);
+                return Scarlet::List<int>(nnn);
             });
     }
     else
@@ -247,7 +250,7 @@ void testScarletList(unsigned char f, bool mask = false)
             f,
             []
             {
-                return Scarlet::List<int>(lll);
+                return Scarlet::List<int>(nnn);
             });
     }
 }
@@ -258,14 +261,43 @@ void testTwoWayScarletList(unsigned char f, bool mask = false)
         interpretBitMask(f);
 
     const char *label = "\033[1;32mScarlet Two Way\033[0m";
-    // Scarlet::List<int> List = Scarlet::List<int>(lll);
+    // Scarlet::twoWayList<int> List = Scarlet::twoWayList<int>(lll);
     if (!f & FLAG_INPUT)
     {
         constructor<Scarlet::twoWayList<int>>(
             label,
             []
             {
-                return Scarlet::twoWayList<int>(lll);
+                return Scarlet::twoWayList<int>(nnn);
+            });
+    }
+    else
+    {
+        perform<Scarlet::twoWayList<int>>(
+            label,
+            f,
+            []
+            {
+                return Scarlet::twoWayList<int>(nnn);
+            });
+    }
+} /**/
+
+/*
+void testCyclicScarletList(unsigned char f, bool mask = false)
+{
+    if (mask)
+        interpretBitMask(f);
+
+    const char *label = "\033[1;32mScarlet Two Way\033[0m";
+    // Scarlet::cyclicList<int> List = Scarlet::cyclicList<int>(lll);
+    if (!f & FLAG_INPUT)
+    {
+        constructor<Scarlet::cyclicList<int>>(
+            label,
+            []
+            {
+                return Scarlet::cyclicList<int>(lll);
             });
     }
     else
@@ -278,7 +310,7 @@ void testTwoWayScarletList(unsigned char f, bool mask = false)
                 return Scarlet::twoWayList<int>(lll);
             });
     }
-}
+}/**/
 
 void testStandardList(unsigned char f, bool mask = false)
 {
@@ -293,7 +325,7 @@ void testStandardList(unsigned char f, bool mask = false)
             label,
             []
             {
-                return std::list<int>{lll};
+                return std::list<int>{nnn};
             });
     }
     else
@@ -303,7 +335,7 @@ void testStandardList(unsigned char f, bool mask = false)
             f,
             []
             {
-                return std::list<int>{lll};
+                return std::list<int>{nnn};
             });
     }
 }
@@ -343,6 +375,45 @@ void allScarletTest()
     f ^= OP_POP_BACK;
     testScarletList(f);
     std::cout << "\n\033[1;31mScarlet\033[0m tests finished.\n";
+}
+
+void allTwoWayScarletTest()
+{
+    unsigned char f = 0;
+    testTwoWayScarletList(f);
+    f ^= OP_PUSH_FRONT;
+    testTwoWayScarletList(f);
+    f = 0;
+    f ^= OP_PUSH_BACK;
+    testTwoWayScarletList(f);
+    f = 0;
+    f ^= OP_POP_FRONT;
+    testTwoWayScarletList(f);
+    f = 0;
+    f ^= OP_POP_BACK;
+    testTwoWayScarletList(f);
+    std::cout << "\n\033[1;32mScarlet Two Way\033[0m tests finished.\n";
+}
+
+
+void allCyclicScarletTest()
+{
+/*
+    unsigned char f = 0;
+    testTwoWayScarletList(f);
+    f ^= OP_PUSH_FRONT;
+    testTwoWayScarletList(f);
+    f = 0;
+    f ^= OP_PUSH_BACK;
+    testTwoWayScarletList(f);
+    f = 0;
+    f ^= OP_POP_FRONT;
+    testTwoWayScarletList(f);
+    f = 0;
+    f ^= OP_POP_BACK;
+    testTwoWayScarletList(f);
+    std::cout << "\n\033[1;32mScarlet Cyclic\033[0m tests finished.\n";
+/**/
 }
 
 char createBitMask()
@@ -391,9 +462,9 @@ char createBitMask()
             if (a & OP_PUSH_FRONT)
                 allStandardTest();
             if (a & OP_PUSH_BACK)
-                a = 0;
+                allTwoWayScarletTest();
             if (a & OP_POP_FRONT)
-                a = 0;
+                allCyclicScarletTest();
             throw "Done testing.";
         default:
             std::cout << "\r";
@@ -411,7 +482,7 @@ int main(int argc, char *argv[])
     }
     char ff;
     std::cout << "\nChoose library:\n";
-    std::cout << "0.\033[1;31m Scarlet \033[0mlibrary.\n1.\033[1;36m Standard \033[0mlibrary.\n2. Compare libraries.\n3. \033[1;31mExit.\033[0m\n";
+    std::cout << "0.\033[1;31m Scarlet \033[0mlibrary.\n1.\033[1;32m Twoway Scarlet \033[0mlibrary.\n2.\033[1;34m Cyclic Scarlet \033[0mlibrary.\n3.\033[1;36m Standard \033[0mlibrary.\n4. Compare libraries.\n5. \033[1;31mExit.\033[0m\n";
     try
     {
         switch (std::cin.get())
@@ -422,13 +493,29 @@ int main(int argc, char *argv[])
             return 1;
             break;
         case '1':
+            a ^= OP_PUSH_BACK;
+            testTwoWayScarletList(createBitMask(), true);
+            return 1;
+            break;
+        case '2':
+            a ^= OP_POP_FRONT;
+            testScarletList(createBitMask(), true);
+            return 1;
+            break;
+        case '3':
             a ^= OP_PUSH_FRONT;
             testStandardList(createBitMask(), true);
             return 1;
             break;
-        case '2':
+        case '4':
             a ^= FLAG_INPUT;
+            std::cout << a << '\n';
             a ^= OP_PUSH_FRONT;
+            std::cout << a << '\n';
+            a ^= OP_PUSH_BACK;
+            std::cout << a << '\n';
+            a ^= OP_POP_FRONT;
+            std::cout << a << '\n';
             std::cout << "Compare libraries.\n";
             ff = createBitMask();
             interpretBitMask(ff);
@@ -436,19 +523,39 @@ int main(int argc, char *argv[])
             testStandardList(ff);
             std::cout << "\n\n\033[1;31mScarlet library:\033[0m";
             testScarletList(ff);
+            std::cout << "\n\n\033[1;32mTwoway Scarlet library:\033[0m";
+            testTwoWayScarletList(ff);
             return 1;
             break;
-        case '3':
+        case '5':
             return 0;
-        case '4':
+        case 's':
             allScarletTest();
             allStandardTest();
             return 2;
-        case '5':
+        case 'd':
+            allStandardTest();
             allScarletTest();
             return 2;
         case '6':
             allStandardTest();
+            return 2;
+        case '7':
+            allScarletTest();
+            allScarletTest();
+            return 2;
+        case '8':
+            allScarletTest();
+            return 2;
+        case '9':
+            allScarletTest();
+            allScarletTest();
+            return 2;
+        case 'a':
+            allStandardTest();
+            allScarletTest();
+            allStandardTest();
+            allScarletTest();
             return 2;
         default:
             std::cout << "Invalid parameter.\n";

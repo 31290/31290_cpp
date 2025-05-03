@@ -1,10 +1,12 @@
 #include "lists.h"
 
+/*
 template <typename T>
 Scarlet::List<T>::List()
 {
     initiate();
-}
+    std::cout << "Empty list created.\n";
+}/**/
 
 template <typename T>
 template <typename... Args>
@@ -159,7 +161,7 @@ bool Scarlet::List<T>::empty()
 }
 
 template <typename T>
-Scarlet::List<T>::Node::Node(T value, Node *next) : value(value), next(next){};
+Scarlet::List<T>::Node::Node(T value, Node *next, Node *prev) : value(value), next(next), prev(prev){};
 
 // twoWayList here.
 
@@ -170,12 +172,12 @@ Scarlet::twoWayList<T>::twoWayList(Args... args)
     initiate();
 
     (push_back(args), ...);
-}
+} /**/
 
 template <typename T>
 void Scarlet::twoWayList<T>::push_front(T val)
 {
-    this->len++;
+    len++;
     Node *x = new Node(val, head, nullptr);
     if (head != nullptr)
         head->prev = x;
@@ -207,16 +209,63 @@ T Scarlet::twoWayList<T>::pop_back()
         delete tail;
         head = nullptr;
         tail = nullptr;
-        this->len--;
+        len--;
         return t;
     }
     Node *n = tail->prev;
     delete tail;
     tail = n;
     tail->next = nullptr;
-    this->len--;
+    len--;
     return t;
+}
+/**/
+
+/*
+template <typename T>
+Scarlet::twoWayList<T>::~twoWayList()
+{
+    Node *curr = head;
+    while (curr != nullptr)
+    {
+        Node *n = curr->next;
+        delete curr;
+        curr = n;
+    }
+}
+/**/
+
+// cyclicList here.
+
+template <typename T>
+template <typename... Args>
+Scarlet::cyclicList<T>::cyclicList(Args... args)
+{
+    initiate();
+
+    (push_back(args), ...);
+    if (head != nullptr)
+        updateCycle();
 }
 
 template <typename T>
-Scarlet::twoWayList<T>::Node::Node(T value, Node *next, Node *prev) : value(value), next(next), prev(prev){};
+void Scarlet::cyclicList<T>::push_back(T val)
+{
+    len++;
+    Node *x = new Node(val, nullptr);
+    if (tail != nullptr)
+    {
+        tail->next = x;
+        updateCycle();
+    }
+
+    tail = x;
+    if (head == nullptr)
+        head = tail;
+}
+
+template <typename T>
+void Scarlet::cyclicList<T>::updateCycle()
+{
+    tail->next = head;
+}
