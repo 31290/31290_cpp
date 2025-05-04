@@ -5,38 +5,6 @@ namespace Scarlet
     template <typename T>
     class List
     {
-    public:
-        // List();
-        template <typename... Args>
-        List(Args... args);
-        ~List();
-        void push_front(T val);
-        void push_back(T val);
-        T pop_front();
-        T pop_back();
-        T front();
-        T back();
-        int size();
-        void dumpContent(bool full = false);
-        void dump();
-        bool empty();
-
-        class Iterator
-        {
-        public:
-            using Node = typename List<T>::Node;
-            Iterator(Node *ptr);
-            T &operator*();
-            Iterator &operator++();
-            bool operator!=(const Iterator &other);
-
-        protected:
-            Node *current;
-        };
-
-        Iterator begin();
-        Iterator end();
-
     protected:
         int len;
         struct Node
@@ -49,6 +17,38 @@ namespace Scarlet
         Node *head;
         Node *tail;
         void initiate();
+
+    public:
+        // List();
+        template <typename... Args>
+        List(Args... args);
+        ~List();
+        void push_front(T val);
+        void push_back(T val);
+        T pop_front();
+        T pop_back();
+        T front();
+        T back();
+        int size();
+        void dumpNode(Node *n);
+        void dumpContent(bool full = false);
+        void dump();
+        bool empty();
+
+        class Iterator
+        {
+        public:
+            Iterator(Node *ptr);
+            T &operator*();
+            Iterator &operator++();
+            bool operator!=(const Iterator &other);
+
+        protected:
+            Node *current;
+        };
+
+        Iterator begin();
+        Iterator end();
     };
 
     template <typename T>
@@ -63,6 +63,7 @@ namespace Scarlet
         void push_front(T val);
         void push_back(T val);
         T pop_back();
+        T pop_front();
 
         class reverseIterator : public List<T>::Iterator
         {
@@ -118,6 +119,7 @@ namespace Scarlet
         cyclicIterator end();
 
         using typename List<T>::Node;
+        using List<T>::dumpNode;
         using List<T>::size;
         using List<T>::head;
         using List<T>::tail;

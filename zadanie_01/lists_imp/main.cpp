@@ -7,6 +7,7 @@
 #include <functional>
 #include <type_traits>
 
+#define small 1, 2, 3, 4, 5
 #define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 #define mmm lll, lll, lll, lll, lll, lll, lll, lll, lll, lll
 #define nnn mmm, mmm, mmm, mmm, mmm, mmm, mmm, mmm, mmm, mmm
@@ -166,6 +167,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         {
             if constexpr (requires { List.dump(); })
             {
+                // std::cout << "\nThis is my implementation\n";
                 start = std::chrono::high_resolution_clock::now();
                 if (f & OP_PUSH_FRONT)
                     for (i = 0; i < c; ++i)
@@ -216,6 +218,7 @@ void perform(const char *label, char f, std::function<list()> constr)
             int sum = 0;
             std::cout << List.size();
             std::cout << "\033[1;37m{  ";
+            
             if constexpr (requires { List.rbegin(); })
             {
                 if (List.size() <= 200)
@@ -233,7 +236,7 @@ void perform(const char *label, char f, std::function<list()> constr)
                 end = std::chrono::high_resolution_clock::now();
             }
             else
-            {
+            {/**/
                 if (List.size() <= 200)
                     for (const auto &el : List)
                     {
@@ -244,8 +247,6 @@ void perform(const char *label, char f, std::function<list()> constr)
                 for (const auto &el : List)
                 {
                     sum += el;
-                    if (List.size() <= 200)
-                        std::cout << el << ", ";
                 }
                 end = std::chrono::high_resolution_clock::now();
             }
@@ -296,7 +297,7 @@ void testScarletList(unsigned char f, bool mask = false)
         ScarletLabel,
         []
         {
-            return Scarlet::List<int>(mmm);
+            return Scarlet::List<int>(nnn);
         },
         f,
         mask);
@@ -307,7 +308,7 @@ void testTwoWayScarletList(unsigned char f, bool mask = false)
         TwoWayLabel,
         []
         {
-            return Scarlet::twoWayList<int>(mmm);
+            return Scarlet::twoWayList<int>(nnn);
         },
         f,
         mask);
@@ -318,7 +319,7 @@ void testCyclicScarletList(unsigned char f, bool mask = false)
         CyclicLabel,
         []
         {
-            return Scarlet::cyclicList<int>(mmm);
+            return Scarlet::cyclicList<int>(nnn);
         },
         f,
         mask);
@@ -329,7 +330,7 @@ void testStandardList(unsigned char f, bool mask = false)
         StandardLabel,
         []
         {
-            return std::list<int>{mmm};
+            return std::list<int>{nnn};
         },
         f,
         mask);

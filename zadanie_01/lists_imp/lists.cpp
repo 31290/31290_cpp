@@ -43,39 +43,6 @@ int Scarlet::List<T>::size()
     return len;
 }
 
-#ifdef ENABLE_DUMP
-template <typename T>
-void Scarlet::List<T>::dumpContent(bool full)
-{
-    Node *n = head;
-    std::cout << "\033[1;34m{  ";
-    while (n != nullptr)
-    {
-        if (full)
-            std::cout << "\n[ptr: " << n
-                      << "val: " << n->value
-                      << ", next: " << n->next
-                      << ", prev: " << n->prev
-                      << "]\n";
-        else
-            std::cout << n->value << ", ";
-        n = n->next;
-    }
-    std::cout << "\b\b  }\033[0m";
-}
-
-template <typename T>
-void Scarlet::List<T>::dump()
-{
-    dumpContent();
-    std::cout << "\033[1;34m(Size:" << len << ")\033[0m";
-}
-#endif
-
-#ifndef ENABLE_DUMP
-#warning "Dump functions are unavailable."
-#endif
-
 template <typename T>
 void Scarlet::List<T>::push_front(T val)
 {
@@ -170,6 +137,51 @@ bool Scarlet::List<T>::empty()
 template <typename T>
 Scarlet::List<T>::Node::Node(T value, Node *next, Node *prev) : value(value), next(next), prev(prev){};
 
+#ifdef ENABLE_DUMP
+
+template <typename T>
+void Scarlet::List<T>::dumpNode(Node *n)
+{
+
+    std::cout << "\n[\033[1;31mptr: " << n
+              << ", \033[1;32mval: " << n->value
+              << ", \033[1;33mnext: " << n->next
+              << ", \033[1;35mprev: " << n->prev
+              << "\033[1;34m]\n";
+}
+
+template <typename T>
+void Scarlet::List<T>::dumpContent(bool full)
+{
+    Node *n = head;
+    std::cout << "\033[1;34m{  ";
+    while (n != nullptr)
+    {
+        if (full)
+        {
+            std::cout << "\n";
+            dumpNode(n);
+            std::cout << "\n";
+        }
+        else
+            std::cout << n->value << ", ";
+        n = n->next;
+    }
+    std::cout << "\b\b  }\033[0m";
+}
+
+template <typename T>
+void Scarlet::List<T>::dump()
+{
+    dumpContent();
+    std::cout << "\033[1;34m(Size:" << len << ")\033[0m";
+}
+#endif
+
+#ifndef ENABLE_DUMP
+#warning "Dump functions are unavailable."
+#endif
+
 // kurwinator
 template <typename T>
 Scarlet::List<T>::Iterator::Iterator(Node *ptr) : current(ptr) {}
@@ -241,6 +253,28 @@ void Scarlet::twoWayList<T>::push_back(T val)
 }
 
 template <typename T>
+T Scarlet::twoWayList<T>::pop_front()
+{
+    if (head == nullptr)
+        throw "Empty list.";
+    T t = head->value;
+    if (head == tail)
+    {
+        delete head;
+        head = nullptr;
+        tail = nullptr;
+        len--;
+        return t;
+    }
+    Node *n = head->next;
+    n->prev = nullptr;
+    delete head;
+    head = n;
+    len--;
+    return t;
+}
+
+template <typename T>
 T Scarlet::twoWayList<T>::pop_back()
 {
     if (tail == nullptr)
@@ -263,7 +297,8 @@ T Scarlet::twoWayList<T>::pop_back()
 }
 
 template <typename T>
-Scarlet::twoWayList<T>::reverseIterator& Scarlet::twoWayList<T>::reverseIterator::operator++() {
+Scarlet::twoWayList<T>::reverseIterator &Scarlet::twoWayList<T>::reverseIterator::operator++()
+{
     this->current = this->current->prev;
     return *this;
 }
@@ -414,22 +449,22 @@ void Scarlet::cyclicList<T>::dumpContent(bool full)
     while (n != tail)
     {
         if (full)
-            std::cout << "\n[\033[1;31mptr: " << n
-                      << ", \033[1;32mval: " << n->value
-                      << ", \033[1;33mnext: " << n->next
-                      << ", \033[1;35mprev: " << n->prev
-                      << "\033[1;34m]\n";
+        {
+            std::cout << "\n";
+            dumpNode(n);
+            std::cout << "\n";
+        }
         else
             std::cout << n->value << ", ";
         n = n->next;
     }
     if (!empty())
         if (full)
-            std::cout << "\n[\033[1;31mptr: " << n
-                      << ", \033[1;32mval: " << n->value
-                      << ", \033[1;33mnext: " << n->next
-                      << ", \033[1;35mprev: " << n->prev
-                      << "\033[1;34m]\n";
+        {
+            std::cout << "\n";
+            dumpNode(n);
+            std::cout << "\n";
+        }
         else
             std::cout << n->value << ", ";
     std::cout << "\b\b  }\033[0m";
