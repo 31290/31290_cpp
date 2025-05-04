@@ -17,11 +17,25 @@ namespace Scarlet
         T front();
         T back();
         int size();
-        void dumpContent();
+        void dumpContent(bool full = false);
         void dump();
         bool empty();
 
-        List<T> operator=(T val);
+        class Iterator
+        {
+        public:
+            using Node = typename List<T>::Node;
+            Iterator(Node *ptr);
+            T &operator*();
+            Iterator &operator++();
+            bool operator!=(const Iterator &other);
+
+        protected:
+            Node *current;
+        };
+
+        Iterator begin();
+        Iterator end();
 
     protected:
         int len;
@@ -69,8 +83,25 @@ namespace Scarlet
         void push_back(T val);
         T pop_back();
         T pop_front();
-        void dumpContent();
+        void dumpContent(bool full = false);
         void dump();
+
+        class cyclicIterator : public List<T>::Iterator
+        {
+        public:
+            using Node = typename List<T>::Node;
+            cyclicIterator(Node *start, Node *current, bool done = false);
+            T& operator*();
+            cyclicIterator &operator++();
+            bool operator!=(const cyclicIterator &other);
+
+        private:
+            Node *_start;
+            bool _done;
+        };
+
+        cyclicIterator begin();
+        cyclicIterator end();
 
         using typename List<T>::Node;
         using List<T>::size;

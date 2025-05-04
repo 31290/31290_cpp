@@ -22,8 +22,8 @@
 #define OP_PUSH_BACK (1 << 2)
 #define OP_POP_FRONT (1 << 3)
 #define OP_POP_BACK (1 << 4)
-#define OP_FRONT (1 << 5)
-#define OP_BACK (1 << 6)
+#define OP_RETURN (1 << 5)
+#define OP_ITER (1 << 6)
 
 int c = 1;
 int a = 0;
@@ -48,10 +48,10 @@ void interpretBitMask(unsigned char f)
         std::cout << "OP_POP_FRONT ";
     if (f & OP_POP_BACK)
         std::cout << "OP_POP_BACK ";
-    if (f & OP_FRONT)
-        std::cout << "OP_FRONT ";
-    if (f & OP_BACK)
-        std::cout << "OP_BACK ";
+    if (f & OP_RETURN)
+        std::cout << "OP_RETURN ";
+    if (f & OP_ITER)
+        std::cout << "OP_ITER ";
 }
 
 void getActions(char f, int i = -1)
@@ -69,18 +69,20 @@ void getActions(char f, int i = -1)
         std::cout << "\033[1;32m" << c << "\033[0m times";
     else
         std::cout << "\033[1;32m" << i << "\033[0m times";
+    if (f & OP_ITER)
+        std::cout << " and \033[1;31mOP_ITER\033[0m";
 }
 
 void listOptions()
 {
-    std::cout << "\nChoose actions:\n0. Only constructor.\n1. Push front\n2. Push back\n3. Pop front\n4. Pop back\n5. Front\n6. Back\n7. Repetition.\n8. End\n9. List options.\n";
+    std::cout << "\nChoose actions:\n0. Only constructor.\n1. Push front\n2. Push back\n3. Pop front\n4. Pop back\n5. Begin and End\n6. Iterate\n7. Repetition.\n8. End\n9. List options.\n";
 }
 
 template <typename T>
 void dumpContent(std::list<T> &List)
 {
     std::cout << "\033[1;34m{  ";
-    for (const auto &element : List)
+    for (const T &element : List)
     {
         std::cout << element << ", ";
     }
@@ -206,11 +208,23 @@ void perform(const char *label, char f, std::function<list()> constr)
         }
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
-        if (f & OP_FRONT)
-            std::cout << "Front: " << List.front() << std::endl;
-        if (f & OP_BACK)
-            std::cout << "Back: " << List.back() << std::endl;
-
+        if (f & OP_RETURN)
+            std::cout << "\nFront: " << List.front() << " Back: " << List.back() << "\n";
+        if (f & OP_ITER)
+        {
+            int sum = 0;
+            std::cout << "\033[1;31m{  ";
+            start = std::chrono::high_resolution_clock::now();
+            for (const auto &el : List)
+            {
+                sum += el;
+                // std::cout << element << ", ";
+            }
+            end = std::chrono::high_resolution_clock::now();
+            std::cout << "\b\b  } Result: " << sum << "\033[0m";
+            std::chrono::duration<long long, std::nano> d = end - start;
+            std::cout << "\nTime taken by the " << label << " list to iterate a list of size " << List.size() << ": \033[1;33m" << d.count() << "\033[0m ns.\n";
+        }
         std::cout << "Time taken by the " << label << " list to perform\n";
         getActions(f, i);
         std::cout << " was \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count() / 1000000.f << "\033[0m ms ";
@@ -247,120 +261,6 @@ void testList(const char *label, std::function<list()> constr, unsigned char f, 
         perform<list>(label, f, constr);
     }
 }
-
-/*
-void testScarletList(unsigned char f, bool mask = false)
-{
-    if (mask)
-        interpretBitMask(f);
-
-    const char *label = ScarletLabel;
-    // Scarlet::List<int> List = Scarlet::List<int>(lll);
-    if (!f & FLAG_INPUT)
-    {
-        constructor<Scarlet::List<int>>(
-            label,
-            []
-            {
-                return Scarlet::List<int>(lll);
-            });
-    }
-    else
-    {
-        perform<Scarlet::List<int>>(
-            label,
-            f,
-            []
-            {
-                return Scarlet::List<int>(lll);
-            });
-    }
-}
-
-void testTwoWayScarletList(unsigned char f, bool mask = false)
-{
-    if (mask)
-        interpretBitMask(f);
-
-    const char *label = TwoWayLabel;
-    // Scarlet::twoWayList<int> List = Scarlet::twoWayList<int>(lll);
-    if (!f & FLAG_INPUT)
-    {
-        constructor<Scarlet::twoWayList<int>>(
-            label,
-            []
-            {
-                return Scarlet::twoWayList<int>(lll);
-            });
-    }
-    else
-    {
-        perform<Scarlet::twoWayList<int>>(
-            label,
-            f,
-            []
-            {
-                return Scarlet::twoWayList<int>(lll);
-            });
-    }
-}
-
-void testCyclicScarletList(unsigned char f, bool mask = false)
-{
-    if (mask)
-        interpretBitMask(f);
-
-    const char *label = CyclicLabel;
-    // Scarlet::cyclicList<int> List = Scarlet::cyclicList<int>(lll);
-    if (!f & FLAG_INPUT)
-    {
-        constructor<Scarlet::cyclicList<int>>(
-            label,
-            []
-            {
-                return Scarlet::cyclicList<int>(lll);
-            });
-    }
-    else
-    {
-        perform<Scarlet::twoWayList<int>>(
-            label,
-            f,
-            []
-            {
-                return Scarlet::twoWayList<int>(lll);
-            });
-    }
-}
-
-void testStandardList(unsigned char f, bool mask = false)
-{
-    if (mask)
-        interpretBitMask(f);
-
-    const char *label = StandardLabel;
-    // std::list<int> List{lll};
-    if (!f & FLAG_INPUT)
-    {
-        constructor<std::list<int>>(
-            label,
-            []
-            {
-                return std::list<int>{nnn};
-            });
-    }
-    else
-    {
-        perform<std::list<int>>(
-            label,
-            f,
-            []
-            {
-                return std::list<int>{nnn};
-            });
-    }
-}
-/**/
 
 void testScarletList(unsigned char f, bool mask = false)
 {
@@ -424,6 +324,12 @@ void allTestList(const char *label, std::function<list()> constr)
     f = 0;
     f ^= OP_POP_BACK;
     testList<list>(label, constr, f);
+    f = 0;
+    f ^= OP_POP_BACK;
+    testList<list>(label, constr, f);
+    f = 0;
+    f ^= OP_ITER;
+    testList<list>(label, constr, f);
     std::cout << "\n"
               << label << " tests finished.\n";
 }
@@ -434,92 +340,35 @@ void allScarletTest()
         ScarletLabel,
         []
         {
-            return Scarlet::List<int>(lll);
+            return Scarlet::List<int>(nnn);
         });
 }
-
 void allTwoWayScarletTest()
 {
     allTestList<Scarlet::twoWayList<int>>(
         TwoWayLabel,
         []
         {
-            return Scarlet::twoWayList<int>(lll);
+            return Scarlet::twoWayList<int>(nnn);
         });
-    /*
-    std::cout << "\n";
-    unsigned char f = 0;
-    testTwoWayScarletList(f);
-    f ^= OP_PUSH_FRONT;
-    testTwoWayScarletList(f);
-    f = 0;
-    f ^= OP_PUSH_BACK;
-    testTwoWayScarletList(f);
-    f = 0;
-    f ^= OP_POP_FRONT;
-    testTwoWayScarletList(f);
-    f = 0;
-    f ^= OP_POP_BACK;
-    testTwoWayScarletList(f);
-    std::cout << "\n"
-              << TwoWayLabel << " tests finished.\n";
-    /**/
 }
-
 void allCyclicScarletTest()
 {
     allTestList<Scarlet::cyclicList<int>>(
         CyclicLabel,
         []
         {
-            return Scarlet::cyclicList<int>(lll);
+            return Scarlet::cyclicList<int>(nnn);
         });
-    /*
-    std::cout << "\n";
-    unsigned char f = 0;
-    testCyclicScarletList(f);
-    f ^= OP_PUSH_FRONT;
-    testCyclicScarletList(f);
-    f = 0;
-    f ^= OP_PUSH_BACK;
-    testCyclicScarletList(f);
-    f = 0;
-    f ^= OP_POP_FRONT;
-    testCyclicScarletList(f);
-    f = 0;
-    f ^= OP_POP_BACK;
-    testCyclicScarletList(f);
-    std::cout << "\n"
-              << CyclicLabel << " tests finished.\n";
-              /**/
 }
-
 void allStandardTest()
 {
     allTestList<std::list<int>>(
         StandardLabel,
         []
         {
-            return std::list<int>{lll};
+            return std::list<int>{nnn};
         });
-    /*
-    std::cout << "\n";
-    unsigned char f = 0;
-    testStandardList(f);
-    f ^= OP_PUSH_FRONT;
-    testStandardList(f);
-    f = 0;
-    f ^= OP_PUSH_BACK;
-    testStandardList(f);
-    f = 0;
-    f ^= OP_POP_FRONT;
-    testStandardList(f);
-    f = 0;
-    f ^= OP_POP_BACK;
-    testStandardList(f);
-    std::cout << "\n"
-              << StandardLabel << " tests finished.\n";
-              /**/
 }
 
 char createBitMask()
@@ -546,10 +395,10 @@ char createBitMask()
             f ^= OP_POP_BACK;
             break;
         case '5':
-            f ^= OP_FRONT;
+            f ^= OP_RETURN;
             break;
         case '6':
-            f ^= OP_BACK;
+            f ^= OP_ITER;
             break;
         case '7':
             std::cout << "How many times to repeat an action: ";
@@ -563,14 +412,15 @@ char createBitMask()
             listOptions();
             break;
         case 'a':
-            if (a & FLAG_INPUT)
-                allScarletTest();
+            allScarletTest();
             if (a & OP_PUSH_FRONT)
                 allStandardTest();
             if (a & OP_PUSH_BACK)
                 allTwoWayScarletTest();
             if (a & OP_POP_FRONT)
                 allCyclicScarletTest();
+            if (a & FLAG_INPUT)
+                allScarletTest();
             throw "Done testing.";
         default:
             std::cout << "\r";
@@ -586,9 +436,11 @@ int main(int argc, char *argv[])
         c = atoi(argv[1]);
         std::cout << "Number of repetitions set to: \033[1;32m" << c << "\033[0m";
     }
+
     char ff;
     std::cout << "\nChoose library:\n";
     std::cout << "0. " << ScarletLabel << " library.\n1. " << TwoWayLabel << " library.\n2. " << CyclicLabel << " library.\n3. " << StandardLabel << " library.\n4. Compare libraries.\n5. \033[1;31mExit.\033[0m\n";
+
     try
     {
         switch (std::cin.get())

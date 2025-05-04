@@ -45,13 +45,20 @@ int Scarlet::List<T>::size()
 
 #ifdef ENABLE_DUMP
 template <typename T>
-void Scarlet::List<T>::dumpContent()
+void Scarlet::List<T>::dumpContent(bool full)
 {
     Node *n = head;
     std::cout << "\033[1;34m{  ";
     while (n != nullptr)
     {
-        std::cout << n->value << ", ";
+        if (full)
+            std::cout << "\n[ptr: " << n
+                      << "val: " << n->value
+                      << ", next: " << n->next
+                      << ", prev: " << n->prev
+                      << "]\n";
+        else
+            std::cout << n->value << ", ";
         n = n->next;
     }
     std::cout << "\b\b  }\033[0m";
@@ -163,6 +170,41 @@ bool Scarlet::List<T>::empty()
 template <typename T>
 Scarlet::List<T>::Node::Node(T value, Node *next, Node *prev) : value(value), next(next), prev(prev){};
 
+// kurwinator
+template <typename T>
+Scarlet::List<T>::Iterator::Iterator(Node *ptr) : current(ptr) {}
+
+template <typename T>
+T &Scarlet::List<T>::Iterator::operator*()
+{
+    return current->value;
+}
+
+template <typename T>
+typename Scarlet::List<T>::Iterator &Scarlet::List<T>::Iterator::operator++()
+{
+    current = current->next;
+    return *this;
+}
+
+template <typename T>
+bool Scarlet::List<T>::Iterator::operator!=(const Iterator &other)
+{
+    return current != other.current;
+}
+
+template <typename T>
+typename Scarlet::List<T>::Iterator Scarlet::List<T>::begin()
+{
+    return Iterator(head);
+}
+
+template <typename T>
+typename Scarlet::List<T>::Iterator Scarlet::List<T>::end()
+{
+    return Iterator(nullptr);
+}
+
 // twoWayList here.
 
 template <typename T>
@@ -251,15 +293,17 @@ Scarlet::cyclicList<T>::cyclicList(Args... args)
 template <typename T>
 Scarlet::cyclicList<T>::~cyclicList()
 {
+    if (head == nullptr)
+        return;
     Node *curr = head;
-    if (tail) delete tail->next;
-    while (curr != tail)
+    do
     {
-        Node *n = curr->next;
+        Node *next = curr->next;
         delete curr;
-        curr = n;
-    }
-    delete tail;
+        curr = next;
+    } while (curr != head);
+
+    head = tail = nullptr;
 }
 
 template <typename T>
@@ -331,7 +375,7 @@ T Scarlet::cyclicList<T>::pop_back()
     }
     delete tail;
     tail = n;
-    tail->next = nullptr;
+    tail->next = head;
     len--;
     return t;
 }
@@ -344,17 +388,31 @@ void Scarlet::cyclicList<T>::updateCycle()
 
 #ifdef ENABLE_DUMP
 template <typename T>
-void Scarlet::cyclicList<T>::dumpContent()
+void Scarlet::cyclicList<T>::dumpContent(bool full)
 {
     Node *n = head;
     std::cout << "\033[1;34m{  ";
     while (n != tail)
     {
-        std::cout << n->value << ", ";
+        if (full)
+            std::cout << "\n[\033[1;31mptr: " << n
+                      << ", \033[1;32mval: " << n->value
+                      << ", \033[1;33mnext: " << n->next
+                      << ", \033[1;35mprev: " << n->prev
+                      << "\033[1;34m]\n";
+        else
+            std::cout << n->value << ", ";
         n = n->next;
     }
     if (!empty())
-        std::cout << n->value << ", ";
+        if (full)
+            std::cout << "\n[\033[1;31mptr: " << n
+                      << ", \033[1;32mval: " << n->value
+                      << ", \033[1;33mnext: " << n->next
+                      << ", \033[1;35mprev: " << n->prev
+                      << "\033[1;34m]\n";
+        else
+            std::cout << n->value << ", ";
     std::cout << "\b\b  }\033[0m";
 }
 
@@ -366,6 +424,41 @@ void Scarlet::cyclicList<T>::dump()
 }
 #endif
 
-#ifndef ENABLE_DUMP
-#warning "Dump functions are unavailable."
-#endif
+template <typename T>
+Scarlet::cyclicList<T>::cyclicIterator::cyclicIterator(Node *start, Node *current, bool done)
+    : List<T>::Iterator(current), _start(start), _done(done) {}
+
+template <typename T>
+T &Scarlet::cyclicList<T>::cyclicIterator::operator*()
+{
+    return this->current->value;
+}
+
+template <typename T>
+typename Scarlet::cyclicList<T>::cyclicIterator &Scarlet::cyclicList<T>::cyclicIterator::operator++()
+{
+    this->current = this->current->next;
+    if (this->current == _start)
+    {
+        _done = true;
+    }
+    return *this;
+}
+
+template <typename T>
+bool Scarlet::cyclicList<T>::cyclicIterator::operator!=(const typename Scarlet::cyclicList<T>::cyclicIterator &other)
+{
+    return !(this->current == other.current && this->_done == other._done);
+}
+
+template <typename T>
+typename Scarlet::cyclicList<T>::cyclicIterator Scarlet::cyclicList<T>::begin()
+{
+    return cyclicIterator(this->head, this->head, this->empty());
+}
+
+template <typename T>
+typename Scarlet::cyclicList<T>::cyclicIterator Scarlet::cyclicList<T>::end()
+{
+    return cyclicIterator(this->head, this->head, true);
+}
