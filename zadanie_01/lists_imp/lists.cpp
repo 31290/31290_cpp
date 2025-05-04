@@ -261,6 +261,25 @@ T Scarlet::twoWayList<T>::pop_back()
     len--;
     return t;
 }
+
+template <typename T>
+Scarlet::twoWayList<T>::reverseIterator& Scarlet::twoWayList<T>::reverseIterator::operator++() {
+    this->current = this->current->prev;
+    return *this;
+}
+
+template <typename T>
+typename Scarlet::twoWayList<T>::reverseIterator Scarlet::twoWayList<T>::rbegin()
+{
+    return reverseIterator(tail);
+}
+
+template <typename T>
+typename Scarlet::twoWayList<T>::reverseIterator Scarlet::twoWayList<T>::rend()
+{
+    return reverseIterator(nullptr);
+}
+
 /**/
 
 /*

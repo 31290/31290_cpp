@@ -8,8 +8,8 @@
 #include <type_traits>
 
 #define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-#define mmmm lll, lll, lll, lll, lll, lll, lll, lll, lll, lll
-#define nnn mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm, mmmm
+#define mmm lll, lll, lll, lll, lll, lll, lll, lll, lll, lll
+#define nnn mmm, mmm, mmm, mmm, mmm, mmm, mmm, mmm, mmm, mmm
 // #define ooo nnn, nnn, nnn, nnn, nnn, nnn, nnn, nnn, nnn, nnn
 
 #define ScarletLabel "\033[1;31mScarlet\033[0m"
@@ -27,6 +27,7 @@
 
 int c = 1;
 int a = 0;
+bool saveToCSV = false;
 
 void interpretBitMask(unsigned char f)
 {
@@ -151,7 +152,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         start = std::chrono::high_resolution_clock::now();
         list List = constr();
         end = std::chrono::high_resolution_clock::now();
-        std::cout << "\n\nTime taken by the " << label << " list to create a list ";
+        std::cout << "\n\nTime taken by the " << label << " list to create a list of size: " << List.size();
         if (List.size() < 100)
             if constexpr (requires { List.dump(); })
                 List.dump();
@@ -213,22 +214,48 @@ void perform(const char *label, char f, std::function<list()> constr)
         if (f & OP_ITER)
         {
             int sum = 0;
-            std::cout << "\033[1;31m{  ";
-            start = std::chrono::high_resolution_clock::now();
-            for (const auto &el : List)
+            std::cout << "\033[1;37m{  ";
+            if constexpr (requires { List.rbegin(); })
             {
-                sum += el;
-                // std::cout << element << ", ";
+                if (List.size() <= 200)
+                    for (auto rev = List.rbegin(); rev != List.rend(); ++rev)
+                    {
+                        const auto &el = *rev;
+                        std::cout << el << ", ";
+                    }
+                start = std::chrono::high_resolution_clock::now();
+                for (auto rev = List.rbegin(); rev != List.rend(); ++rev)
+                {
+                    const auto &el = *rev;
+                    sum += el;
+                }
+                end = std::chrono::high_resolution_clock::now();
             }
-            end = std::chrono::high_resolution_clock::now();
-            std::cout << "\b\b  } Result: " << sum << "\033[0m";
+            else
+            {
+                if (List.size() <= 200)
+                    for (const auto &el : List)
+                    {
+                        if (List.size() <= 200)
+                            std::cout << el << ", ";
+                    }
+                start = std::chrono::high_resolution_clock::now();
+                for (const auto &el : List)
+                {
+                    sum += el;
+                    if (List.size() <= 200)
+                        std::cout << el << ", ";
+                }
+                end = std::chrono::high_resolution_clock::now();
+            }
+            std::cout << "\b\b  } \033[1;31mChecksum: " << sum << "\033[0m";
             std::chrono::duration<long long, std::nano> d = end - start;
             std::cout << "\nTime taken by the " << label << " list to iterate a list of size " << List.size() << ": \033[1;33m" << d.count() << "\033[0m ns.\n";
         }
         std::cout << "Time taken by the " << label << " list to perform\n";
         getActions(f, i);
         std::cout << " was \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count() / 1000000.f << "\033[0m ms ";
-        if (c != 1)
+        if (c != 1 && i != 0)
             std::cout << "which averages to \033[1;35m" << duration.count() / i << "\033[0m ns for all actions.";
         if (List.size() < 100)
         {
@@ -325,6 +352,21 @@ void allTestList(const char *label, std::function<list()> constr)
     f ^= OP_POP_BACK;
     testList<list>(label, constr, f);
     f = 0;
+    f ^= OP_ITER;
+    testList<list>(label, constr, f);
+    std::cout << "\n"
+              << label << " tests finished.\n";
+}
+
+template <typename list>
+void fullTestList(const char *label, std::function<list()> constr)
+{
+    std::cout << "\n";
+    unsigned char f = 0;
+    testList<list>(label, constr, f);
+    f ^= OP_PUSH_FRONT;
+    f ^= OP_PUSH_BACK;
+    f ^= OP_POP_FRONT;
     f ^= OP_POP_BACK;
     testList<list>(label, constr, f);
     f = 0;
@@ -364,6 +406,43 @@ void allCyclicScarletTest()
 void allStandardTest()
 {
     allTestList<std::list<int>>(
+        StandardLabel,
+        []
+        {
+            return std::list<int>{nnn};
+        });
+}
+
+void fullScarletTest()
+{
+    fullTestList<Scarlet::List<int>>(
+        ScarletLabel,
+        []
+        {
+            return Scarlet::List<int>(nnn);
+        });
+}
+void fullTwoWayScarletTest()
+{
+    fullTestList<Scarlet::twoWayList<int>>(
+        TwoWayLabel,
+        []
+        {
+            return Scarlet::twoWayList<int>(nnn);
+        });
+}
+void fullCyclicScarletTest()
+{
+    fullTestList<Scarlet::cyclicList<int>>(
+        CyclicLabel,
+        []
+        {
+            return Scarlet::cyclicList<int>(nnn);
+        });
+}
+void fullStandardTest()
+{
+    fullTestList<std::list<int>>(
         StandardLabel,
         []
         {
@@ -412,15 +491,15 @@ char createBitMask()
             listOptions();
             break;
         case 'a':
-            allScarletTest();
+            fullScarletTest();
             if (a & OP_PUSH_FRONT)
-                allStandardTest();
+                fullStandardTest();
             if (a & OP_PUSH_BACK)
-                allTwoWayScarletTest();
+                fullTwoWayScarletTest();
             if (a & OP_POP_FRONT)
-                allCyclicScarletTest();
+                fullCyclicScarletTest();
             if (a & FLAG_INPUT)
-                allScarletTest();
+                fullScarletTest();
             throw "Done testing.";
         default:
             std::cout << "\r";
@@ -516,9 +595,10 @@ int main(int argc, char *argv[])
             allScarletTest();
             return 2;
         case 'a':
-            allStandardTest();
             allScarletTest();
             allStandardTest();
+            allTwoWayScarletTest();
+            allCyclicScarletTest();
             allScarletTest();
             return 2;
         default:

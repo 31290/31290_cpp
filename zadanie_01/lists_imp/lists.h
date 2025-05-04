@@ -64,6 +64,20 @@ namespace Scarlet
         void push_back(T val);
         T pop_back();
 
+        class reverseIterator : public List<T>::Iterator
+        {
+        public:
+            reverseIterator &operator++();
+        };
+
+        using List<T>::Iterator;
+        
+        using List<T>::begin;
+        using List<T>::end;
+
+        reverseIterator rbegin();
+        reverseIterator rend();
+
         using typename List<T>::Node;
         using List<T>::size;
         using List<T>::head;
@@ -91,7 +105,7 @@ namespace Scarlet
         public:
             using Node = typename List<T>::Node;
             cyclicIterator(Node *start, Node *current, bool done = false);
-            T& operator*();
+            T &operator*();
             cyclicIterator &operator++();
             bool operator!=(const cyclicIterator &other);
 
