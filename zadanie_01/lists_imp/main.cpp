@@ -116,7 +116,7 @@ void constructor(const char *label, std::function<list()> constr)
             if (c == 1)
             {
                 std::cout << "\nTime taken by the " << label << " list to create a list of size " << t;
-                if (List.size() < 100)
+                if (List.size() <= 200)
                     if constexpr (requires { List.dump(); })
                         List.dump();
                     else
@@ -153,7 +153,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         list List = constr();
         end = std::chrono::high_resolution_clock::now();
         std::cout << "\n\nTime taken by the " << label << " list to create a list of size: " << List.size();
-        if (List.size() < 100)
+        if (List.size() <= 200)
             if constexpr (requires { List.dump(); })
                 List.dump();
             else
@@ -214,6 +214,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         if (f & OP_ITER)
         {
             int sum = 0;
+            std::cout << List.size();
             std::cout << "\033[1;37m{  ";
             if constexpr (requires { List.rbegin(); })
             {
@@ -257,7 +258,7 @@ void perform(const char *label, char f, std::function<list()> constr)
         std::cout << " was \033[1;33m" << duration.count() << "\033[0m ns or \033[1;33m" << duration.count() / 1000000.f << "\033[0m ms ";
         if (c != 1 && i != 0)
             std::cout << "which averages to \033[1;35m" << duration.count() / i << "\033[0m ns for all actions.";
-        if (List.size() < 100)
+        if (List.size() <= 200)
         {
             std::cout << "\nand resulted in a list ";
             if constexpr (requires { List.dump(); })
@@ -295,7 +296,7 @@ void testScarletList(unsigned char f, bool mask = false)
         ScarletLabel,
         []
         {
-            return Scarlet::List<int>(lll);
+            return Scarlet::List<int>(mmm);
         },
         f,
         mask);
@@ -306,7 +307,7 @@ void testTwoWayScarletList(unsigned char f, bool mask = false)
         TwoWayLabel,
         []
         {
-            return Scarlet::twoWayList<int>(lll);
+            return Scarlet::twoWayList<int>(mmm);
         },
         f,
         mask);
@@ -317,7 +318,7 @@ void testCyclicScarletList(unsigned char f, bool mask = false)
         CyclicLabel,
         []
         {
-            return Scarlet::cyclicList<int>(lll);
+            return Scarlet::cyclicList<int>(mmm);
         },
         f,
         mask);
@@ -328,7 +329,7 @@ void testStandardList(unsigned char f, bool mask = false)
         StandardLabel,
         []
         {
-            return std::list<int>{lll};
+            return std::list<int>{mmm};
         },
         f,
         mask);
@@ -382,7 +383,7 @@ void allScarletTest()
         ScarletLabel,
         []
         {
-            return Scarlet::List<int>(nnn);
+            return Scarlet::List<int>(lll);
         });
 }
 void allTwoWayScarletTest()
@@ -391,7 +392,7 @@ void allTwoWayScarletTest()
         TwoWayLabel,
         []
         {
-            return Scarlet::twoWayList<int>(nnn);
+            return Scarlet::twoWayList<int>(lll);
         });
 }
 void allCyclicScarletTest()
@@ -400,7 +401,7 @@ void allCyclicScarletTest()
         CyclicLabel,
         []
         {
-            return Scarlet::cyclicList<int>(nnn);
+            return Scarlet::cyclicList<int>(lll);
         });
 }
 void allStandardTest()
@@ -409,7 +410,7 @@ void allStandardTest()
         StandardLabel,
         []
         {
-            return std::list<int>{nnn};
+            return std::list<int>{lll};
         });
 }
 
@@ -419,7 +420,7 @@ void fullScarletTest()
         ScarletLabel,
         []
         {
-            return Scarlet::List<int>(nnn);
+            return Scarlet::List<int>(lll);
         });
 }
 void fullTwoWayScarletTest()
@@ -428,7 +429,7 @@ void fullTwoWayScarletTest()
         TwoWayLabel,
         []
         {
-            return Scarlet::twoWayList<int>(nnn);
+            return Scarlet::twoWayList<int>(lll);
         });
 }
 void fullCyclicScarletTest()
@@ -437,7 +438,7 @@ void fullCyclicScarletTest()
         CyclicLabel,
         []
         {
-            return Scarlet::cyclicList<int>(nnn);
+            return Scarlet::cyclicList<int>(lll);
         });
 }
 void fullStandardTest()
@@ -446,7 +447,7 @@ void fullStandardTest()
         StandardLabel,
         []
         {
-            return std::list<int>{nnn};
+            return std::list<int>{lll};
         });
 }
 
@@ -501,6 +502,12 @@ char createBitMask()
             if (a & FLAG_INPUT)
                 fullScarletTest();
             throw "Done testing.";
+        case 's':
+            f ^= OP_PUSH_FRONT;
+            f ^= OP_PUSH_BACK;
+            f ^= OP_POP_FRONT;
+            f ^= OP_ITER;
+            break;
         default:
             std::cout << "\r";
             break;

@@ -71,7 +71,7 @@ namespace Scarlet
         };
 
         using List<T>::Iterator;
-        
+
         using List<T>::begin;
         using List<T>::end;
 
