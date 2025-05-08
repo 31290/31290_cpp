@@ -1,49 +1,33 @@
 #include <functional>
 #include <list>
-#include <chrono>
 #include <iostream>
 #include "lists.h"
 #define ENABLE_DUMP
 
-#define lll 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-
-template <typename ListType>
-double testList(const char *label, std::function<ListType()> constructor)
-{
-    auto start = std::chrono::steady_clock::now();
-
-    ListType lst = constructor();
-
-    auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double, std::milli> elapsed = end - start;
-
-    return elapsed.count();
-}
+#define small 1, 2, 3, 4, 5
 
 int main()
 {
-    std::cout << "Scarlet " << testList<Scarlet ::List<int>>("Scarlet ", []
-                                                           { return Scarlet ::List<int>(lll); })
-              << " ms\n";
-    std::cout << testList<std::list<int>>("Standard", []
-                                          { return std::list<int>{lll}; })
-              << " ms\n";
-    std::cout << "Scarlet " << testList<Scarlet ::List<int>>("Scarlet ", []
-                                                           { return Scarlet ::List<int>(lll); })
-              << " ms\n";
-    std::cout << testList<std::list<int>>("Standard", []
-                                          { return std::list<int>{lll}; })
-              << " ms\n";
-    std::cout << "Scarlet " << testList<Scarlet ::List<int>>("Scarlet ", []
-                                                           { return Scarlet ::List<int>(lll); })
-              << " ms\n";
-    std::cout << testList<std::list<int>>("Standard", []
-                                          { return std::list<int>{lll}; })
-              << " ms\n";
-    std::cout << "Scarlet " << testList<Scarlet ::List<int>>("Scarlet ", []
-                                                           { return Scarlet ::List<int>(lll); })
-              << " ms\n";
-    std::cout << testList<std::list<int>>("Standard", []
-                                          { return std::list<int>{lll}; })
-              << " ms\n";
+    std::cout << "chuj" << "\n";
+    Scarlet::List<int> list1 = Scarlet::List<int>(small);
+    Scarlet::List<int> list2 = Scarlet::List<int>(small);
+    Scarlet::List<int> list3 = Scarlet::List<int>(small);
+    Scarlet::List<int> list4 = Scarlet::List<int>(small);
+    Scarlet::List<int> list5 = Scarlet::List<int>(small);
+    std::cout << "pierdole" << "\n";
+
+    Scarlet::List<Scarlet::List<int>> list = Scarlet::List<Scarlet::List<int>>();
+    std::cout << "ejbie" << "\n";
+    list.push_back(list1);
+
+    std::cout << "dupa" << "\n";
+    for (Scarlet::List<int> val : list)
+    {
+        std::cout << "kurwa" << "\n";
+        for (const auto &el : val)
+        {
+            std::cout << "el" << el << "\n";
+        }
+        std::cout << "mać" << "\n";
+    }
 }

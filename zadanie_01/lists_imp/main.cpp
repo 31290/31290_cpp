@@ -28,7 +28,7 @@
 
 int c = 1;
 int a = 0;
-bool saveToCSV = false;
+bool adding = false;
 
 void interpretBitMask(unsigned char f)
 {
@@ -210,6 +210,10 @@ void perform(const char *label, char f, std::function<list()> constr)
             std::cout << "\033[1;31mError: " << x << "\033[0m Ending early.\n";
         }
         end = std::chrono::high_resolution_clock::now();
+        if (adding)
+            for (i = 0; i < c; ++i)
+                List.push_back(c - i);
+
         duration = end - start;
         if (f & OP_RETURN)
             std::cout << "\nFront: " << List.front() << " Back: " << List.back() << "\n";
@@ -370,8 +374,6 @@ void fullTestList(const char *label, std::function<list()> constr)
     f ^= OP_PUSH_BACK;
     f ^= OP_POP_FRONT;
     f ^= OP_POP_BACK;
-    testList<list>(label, constr, f);
-    f = 0;
     f ^= OP_ITER;
     testList<list>(label, constr, f);
     std::cout << "\n"
@@ -454,19 +456,21 @@ void fullStandardTest()
 
 void finalTest()
 {
-    auto l = Scarlet::twoWayList<int>(small);
-    auto s = std::list<int>{nnn};
+    int temp = c;
     char t = 0;
     t ^= OP_POP_BACK;
     t ^= OP_PUSH_FRONT;
     t ^= OP_PUSH_BACK;
     t ^= OP_POP_FRONT;
 
-    allStandardTest();
+    c = 2;
     testStandardList(t);
-
-    allTwoWayScarletTest();
     testTwoWayScarletList(t);
+    c = temp;
+    adding = true;
+
+    fullStandardTest();
+    fullTwoWayScarletTest();
 }
 
 char createBitMask()
