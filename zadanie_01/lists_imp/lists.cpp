@@ -384,6 +384,8 @@ void Scarlet::cyclicList<T>::push_back(T val)
     tail = x;
     if (head == nullptr)
         head = tail;
+    else
+        updateCycle();
 }
 
 template <typename T>
