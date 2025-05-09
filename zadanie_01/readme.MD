@@ -1,6 +1,6 @@
 # Plan wykonania zadania
 
-1. Imię i nazwisko: Kacper Dorożalski
+1. Imię i nazwisko: 31290
 
 2. Temat: Implementacja list jedno i dwukierunkowych oraz cyklicznych. 
 
