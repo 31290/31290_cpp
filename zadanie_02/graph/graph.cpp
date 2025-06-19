@@ -1,6 +1,7 @@
 #include "graph.h"
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 
 Coords::Coords(int x, int y) : x(x), y(y) {}
 
@@ -81,18 +82,18 @@ Graph::Graph(int nest, int count, int y, int x)
     {
         for(int j = 0; j < count; ++j)
         {
-            std::cout << "Creating node at (" << j * x << ", " << i * y << ")\n";
+            // std::cout << "Creating node at (" << j * x << ", " << i * y << ")\n";
             int id = i * count + j;
-            Coords coords(j * x, i * y);
+            Coords coords(j * (x-1) + rand() % x + 1, i * (y-1) + rand() % y + 1);
             Node *node = createNode(id, coords);
             if (i > 0)
             {
-                std::cout << "Connecting node " << id << " to node " << (i - 1) * count + j << "\n";
+                // std::cout << "Connecting node " << id << " to node " << (i - 1) * count + j << "\n";
                 createEdge(node, findNodeById((i - 1) * count + j));
             }
             if (j > 0)
             {
-                std::cout << "Connecting node " << id << " to node " << i * count + (j - 1) << "\n";
+                // std::cout << "Connecting node " << id << " to node " << i * count + (j - 1) << "\n";
                 createEdge(node, findNodeById(i * count + (j - 1)));
             }
         }
@@ -128,6 +129,20 @@ void Graph::createEdge(Node *source, Node *target)
     source->createEdge(target);
 }
 
+void Graph::createEdge(int sourceID, int targetID)
+{
+    Node *source = getNode(sourceID);
+    Node *target = getNode(targetID);
+    if (source && target)
+    {
+        source->createEdge(target);
+    }
+    else
+    {
+        throw "Source or target node not found";
+    }
+}
+
 Edge *Graph::getEdge(Node *source, Node *target)
 {
     return source->getEdge(target);
@@ -140,7 +155,7 @@ void Graph::printGraph()
         std::cout << "Node " << node->id << " at (" << node->coords.x << ", " << node->coords.y << ") edges:\n";
         for (Edge &edge : node->edges)
         {
-            std::cout << "  to Node " << edge.target->id << " with weight " << edge.weight << "\n";
+            std::cout << "  to Node " << edge.target->id << " at (" << edge.target->coords.x << ", " << edge.target->coords.y << ") with weight " << edge.weight << "\n";
         }
     }
 }

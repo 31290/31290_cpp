@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 
 struct Node;
@@ -29,7 +30,6 @@ struct Node
     Node(int id, int x, int y);
 
     void createEdge(Node *target);
-    // void removeEdge(Node *target);
 
     Edge *getEdge(Node *target);
     Edge *getSmallestEdge(int minWeight = 0, int count = 0);
@@ -53,6 +53,7 @@ public:
     Node *getNode(int id);
     
     void createEdge(Node *source, Node *target);
+    void createEdge(int sourceID, int targetID);
     Edge *getEdge(Node *source, Node *target);
 
     void printGraph();

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1172" height="842" xmlns="http://www.w3.org/2000/svg">
+<style>
+.node-unvisited { fill: white; stroke: black; stroke-width: 2; }
+.node-visited { fill: lightblue; stroke: black; stroke-width: 2; }
+.node-current { fill: yellow; stroke: black; stroke-width: 3; }
+.node-path { fill: lightgreen; stroke: black; stroke-width: 2; }
+.edge { stroke: gray; stroke-width: 1; }
+.edge-path { stroke: red; stroke-width: 3; }
+.text { font-family: Arial; font-size: 12px; text-anchor: middle; }
+.weight-text { font-family: Arial; font-size: 10px; text-anchor: middle; fill: blue; }
+</style>
+<line x1="136" y1="65" x2="254" y2="78" class="edge"/>
+<text x="195" y="71" class="weight-text">118</text>
+<line x1="136" y1="65" x2="163" y2="220" class="edge"/>
+<text x="149" y="142" class="weight-text">157</text>
+<line x1="254" y1="78" x2="382" y2="97" class="edge"/>
+<text x="318" y="87" class="weight-text">129</text>
+<line x1="254" y1="78" x2="269" y2="215" class="edge"/>
+<text x="261" y="146" class="weight-text">137</text>
+<line x1="382" y1="97" x2="466" y2="149" class="edge"/>
+<text x="424" y="123" class="weight-text">98</text>
+<line x1="382" y1="97" x2="309" y2="224" class="edge"/>
+<text x="345" y="160" class="weight-text">146</text>
+<line x1="466" y1="149" x2="576" y2="101" class="edge"/>
+<text x="521" y="125" class="weight-text">120</text>
+<line x1="466" y1="149" x2="499" y2="241" class="edge"/>
+<text x="482" y="195" class="weight-text">97</text>
+<line x1="576" y1="101" x2="690" y2="134" class="edge"/>
+<text x="633" y="117" class="weight-text">118</text>
+<line x1="576" y1="101" x2="568" y2="185" class="edge"/>
+<text x="572" y="143" class="weight-text">84</text>
+<line x1="690" y1="134" x2="878" y2="118" class="edge"/>
+<text x="784" y="126" class="weight-text">188</text>
+<line x1="690" y1="134" x2="721" y2="192" class="edge"/>
+<text x="705" y="163" class="weight-text">65</text>
+<line x1="878" y1="118" x2="924" y2="78" class="edge"/>
+<text x="901" y="98" class="weight-text">60</text>
+<line x1="878" y1="118" x2="788" y2="229" class="edge"/>
+<text x="833" y="173" class="weight-text">142</text>
+<line x1="924" y1="78" x2="1025" y2="99" class="edge"/>
+<text x="974" y="88" class="weight-text">103</text>
+<line x1="924" y1="78" x2="997" y2="214" class="edge"/>
+<text x="960" y="146" class="weight-text">154</text>
+<line x1="1025" y1="99" x2="1077" y2="212" class="edge"/>
+<text x="1051" y="155" class="weight-text">124</text>
+<line x1="163" y1="220" x2="269" y2="215" class="edge"/>
+<text x="216" y="217" class="weight-text">106</text>
+<line x1="163" y1="220" x2="145" y2="358" class="edge"/>
+<text x="154" y="289" class="weight-text">139</text>
+<line x1="269" y1="215" x2="309" y2="224" class="edge"/>
+<text x="289" y="219" class="weight-text">41</text>
+<line x1="269" y1="215" x2="240" y2="349" class="edge"/>
+<text x="254" y="282" class="weight-text">137</text>
+<line x1="309" y1="224" x2="499" y2="241" class="edge"/>
+<text x="404" y="232" class="weight-text">190</text>
+<line x1="309" y1="224" x2="401" y2="352" class="edge"/>
+<text x="355" y="288" class="weight-text">157</text>
+<line x1="499" y1="241" x2="568" y2="185" class="edge"/>
+<text x="533" y="213" class="weight-text">88</text>
+<line x1="499" y1="241" x2="449" y2="331" class="edge"/>
+<text x="474" y="286" class="weight-text">102</text>
+<line x1="568" y1="185" x2="721" y2="192" class="edge"/>
+<text x="644" y="188" class="weight-text">153</text>
+<line x1="568" y1="185" x2="626" y2="334" class="edge"/>
+<text x="597" y="259" class="weight-text">159</text>
+<line x1="721" y1="192" x2="788" y2="229" class="edge"/>
+<text x="754" y="210" class="weight-text">76</text>
+<line x1="721" y1="192" x2="673" y2="332" class="edge"/>
+<text x="697" y="262" class="weight-text">148</text>
+<line x1="788" y1="229" x2="997" y2="214" class="edge"/>
+<text x="892" y="221" class="weight-text">209</text>
+<line x1="788" y1="229" x2="853" y2="359" class="edge"/>
+<text x="820" y="294" class="weight-text">145</text>
+<line x1="997" y1="214" x2="1077" y2="212" class="edge"/>
+<text x="1037" y="213" class="weight-text">80</text>
+<line x1="997" y1="214" x2="901" y2="393" class="edge"/>
+<text x="949" y="303" class="weight-text">203</text>
+<line x1="1077" y1="212" x2="1041" y2="324" class="edge"/>
+<text x="1059" y="268" class="weight-text">117</text>
+<line x1="145" y1="358" x2="240" y2="349" class="edge"/>
+<text x="192" y="353" class="weight-text">95</text>
+<line x1="145" y1="358" x2="142" y2="506" class="edge"/>
+<text x="143" y="432" class="weight-text">148</text>
+<line x1="240" y1="349" x2="401" y2="352" class="edge"/>
+<text x="320" y="350" class="weight-text">161</text>
+<line x1="240" y1="349" x2="299" y2="474" class="edge"/>
+<text x="269" y="411" class="weight-text">138</text>
+<line x1="401" y1="352" x2="449" y2="331" class="edge"/>
+<text x="425" y="341" class="weight-text">52</text>
+<line x1="401" y1="352" x2="339" y2="442" class="edge"/>
+<text x="370" y="397" class="weight-text">109</text>
+<line x1="449" y1="331" x2="626" y2="334" class="edge"/>
+<text x="537" y="332" class="weight-text">177</text>
+<line x1="449" y1="331" x2="432" y2="508" class="edge"/>
+<text x="440" y="419" class="weight-text">177</text>
+<line x1="626" y1="334" x2="673" y2="332" class="edge"/>
+<text x="649" y="333" class="weight-text">47</text>
+<line x1="626" y1="334" x2="557" y2="449" class="edge"/>
+<text x="591" y="391" class="weight-text">134</text>
+<line x1="673" y1="332" x2="853" y2="359" class="edge"/>
+<text x="763" y="345" class="weight-text">182</text>
+<line x1="673" y1="332" x2="721" y2="453" class="edge"/>
+<text x="697" y="392" class="weight-text">130</text>
+<line x1="853" y1="359" x2="901" y2="393" class="edge"/>
+<text x="877" y="376" class="weight-text">58</text>
+<line x1="853" y1="359" x2="812" y2="481" class="edge"/>
+<text x="832" y="420" class="weight-text">128</text>
+<line x1="901" y1="393" x2="1041" y2="324" class="edge"/>
+<text x="971" y="358" class="weight-text">156</text>
+<line x1="901" y1="393" x2="921" y2="509" class="edge"/>
+<text x="911" y="451" class="weight-text">117</text>
+<line x1="1041" y1="324" x2="1102" y2="484" class="edge"/>
+<text x="1071" y="404" class="weight-text">171</text>
+<line x1="142" y1="506" x2="299" y2="474" class="edge"/>
+<text x="220" y="490" class="weight-text">160</text>
+<line x1="142" y1="506" x2="65" y2="545" class="edge"/>
+<text x="103" y="525" class="weight-text">86</text>
+<line x1="299" y1="474" x2="339" y2="442" class="edge"/>
+<text x="319" y="458" class="weight-text">51</text>
+<line x1="299" y1="474" x2="233" y2="642" class="edge"/>
+<text x="266" y="558" class="weight-text">180</text>
+<line x1="339" y1="442" x2="432" y2="508" class="edge"/>
+<text x="385" y="475" class="weight-text">114</text>
+<line x1="339" y1="442" x2="349" y2="592" class="edge"/>
+<text x="344" y="517" class="weight-text">150</text>
+<line x1="432" y1="508" x2="557" y2="449" class="edge"/>
+<text x="494" y="478" class="weight-text">138</text>
+<line x1="432" y1="508" x2="433" y2="633" class="edge"/>
+<text x="432" y="570" class="weight-text">125</text>
+<line x1="557" y1="449" x2="721" y2="453" class="edge"/>
+<text x="639" y="451" class="weight-text">164</text>
+<line x1="557" y1="449" x2="571" y2="636" class="edge"/>
+<text x="564" y="542" class="weight-text">187</text>
+<line x1="721" y1="453" x2="812" y2="481" class="edge"/>
+<text x="766" y="467" class="weight-text">95</text>
+<line x1="721" y1="453" x2="660" y2="601" class="edge"/>
+<text x="690" y="527" class="weight-text">160</text>
+<line x1="812" y1="481" x2="921" y2="509" class="edge"/>
+<text x="866" y="495" class="weight-text">112</text>
+<line x1="812" y1="481" x2="824" y2="581" class="edge"/>
+<text x="818" y="531" class="weight-text">100</text>
+<line x1="921" y1="509" x2="1102" y2="484" class="edge"/>
+<text x="1011" y="496" class="weight-text">182</text>
+<line x1="921" y1="509" x2="987" y2="638" class="edge"/>
+<text x="954" y="573" class="weight-text">144</text>
+<line x1="1102" y1="484" x2="1021" y2="629" class="edge"/>
+<text x="1061" y="556" class="weight-text">166</text>
+<line x1="65" y1="545" x2="233" y2="642" class="edge"/>
+<text x="149" y="593" class="weight-text">193</text>
+<line x1="65" y1="545" x2="68" y2="777" class="edge"/>
+<text x="66" y="661" class="weight-text">232</text>
+<line x1="233" y1="642" x2="349" y2="592" class="edge"/>
+<text x="291" y="617" class="weight-text">126</text>
+<line x1="233" y1="642" x2="227" y2="742" class="edge"/>
+<text x="230" y="692" class="weight-text">100</text>
+<line x1="349" y1="592" x2="433" y2="633" class="edge"/>
+<text x="391" y="612" class="weight-text">93</text>
+<line x1="349" y1="592" x2="398" y2="672" class="edge"/>
+<text x="373" y="632" class="weight-text">93</text>
+<line x1="433" y1="633" x2="571" y2="636" class="edge"/>
+<text x="502" y="634" class="weight-text">138</text>
+<line x1="433" y1="633" x2="434" y2="696" class="edge"/>
+<text x="433" y="664" class="weight-text">63</text>
+<line x1="571" y1="636" x2="660" y2="601" class="edge"/>
+<text x="615" y="618" class="weight-text">95</text>
+<line x1="571" y1="636" x2="628" y2="662" class="edge"/>
+<text x="599" y="649" class="weight-text">62</text>
+<line x1="660" y1="601" x2="824" y2="581" class="edge"/>
+<text x="742" y="591" class="weight-text">165</text>
+<line x1="660" y1="601" x2="656" y2="731" class="edge"/>
+<text x="658" y="666" class="weight-text">130</text>
+<line x1="824" y1="581" x2="987" y2="638" class="edge"/>
+<text x="905" y="609" class="weight-text">172</text>
+<line x1="824" y1="581" x2="781" y2="686" class="edge"/>
+<text x="802" y="633" class="weight-text">113</text>
+<line x1="987" y1="638" x2="1021" y2="629" class="edge"/>
+<text x="1004" y="633" class="weight-text">35</text>
+<line x1="987" y1="638" x2="936" y2="744" class="edge"/>
+<text x="961" y="691" class="weight-text">117</text>
+<line x1="1021" y1="629" x2="1107" y2="757" class="edge"/>
+<text x="1064" y="693" class="weight-text">154</text>
+<line x1="68" y1="777" x2="227" y2="742" class="edge"/>
+<text x="147" y="759" class="weight-text">162</text>
+<line x1="227" y1="742" x2="398" y2="672" class="edge"/>
+<text x="312" y="707" class="weight-text">184</text>
+<line x1="398" y1="672" x2="434" y2="696" class="edge"/>
+<text x="416" y="684" class="weight-text">43</text>
+<line x1="434" y1="696" x2="628" y2="662" class="edge"/>
+<text x="531" y="679" class="weight-text">196</text>
+<line x1="628" y1="662" x2="656" y2="731" class="edge"/>
+<text x="642" y="696" class="weight-text">74</text>
+<line x1="656" y1="731" x2="781" y2="686" class="edge"/>
+<text x="718" y="708" class="weight-text">132</text>
+<line x1="781" y1="686" x2="936" y2="744" class="edge"/>
+<text x="858" y="715" class="weight-text">165</text>
+<line x1="936" y1="744" x2="1107" y2="757" class="edge"/>
+<text x="1021" y="750" class="weight-text">171</text>
+<circle cx="136" cy="65" r="15" class="node-unvisited"/>
+<text x="136" y="69" class="text">0</text>
+<circle cx="254" cy="78" r="15" class="node-unvisited"/>
+<text x="254" y="82" class="text">1</text>
+<circle cx="382" cy="97" r="15" class="node-unvisited"/>
+<text x="382" y="101" class="text">2</text>
+<circle cx="466" cy="149" r="15" class="node-unvisited"/>
+<text x="466" y="153" class="text">3</text>
+<circle cx="576" cy="101" r="15" class="node-unvisited"/>
+<text x="576" y="105" class="text">4</text>
+<circle cx="690" cy="134" r="15" class="node-unvisited"/>
+<text x="690" y="138" class="text">5</text>
+<circle cx="878" cy="118" r="15" class="node-unvisited"/>
+<text x="878" y="122" class="text">6</text>
+<circle cx="924" cy="78" r="15" class="node-unvisited"/>
+<text x="924" y="82" class="text">7</text>
+<circle cx="1025" cy="99" r="15" class="node-unvisited"/>
+<text x="1025" y="103" class="text">8</text>
+<circle cx="163" cy="220" r="15" class="node-unvisited"/>
+<text x="163" y="224" class="text">9</text>
+<circle cx="269" cy="215" r="15" class="node-unvisited"/>
+<text x="269" y="219" class="text">10</text>
+<circle cx="309" cy="224" r="15" class="node-unvisited"/>
+<text x="309" y="228" class="text">11</text>
+<circle cx="499" cy="241" r="15" class="node-unvisited"/>
+<text x="499" y="245" class="text">12</text>
+<circle cx="568" cy="185" r="15" class="node-unvisited"/>
+<text x="568" y="189" class="text">13</text>
+<circle cx="721" cy="192" r="15" class="node-unvisited"/>
+<text x="721" y="196" class="text">14</text>
+<circle cx="788" cy="229" r="15" class="node-unvisited"/>
+<text x="788" y="233" class="text">15</text>
+<circle cx="997" cy="214" r="15" class="node-unvisited"/>
+<text x="997" y="218" class="text">16</text>
+<circle cx="1077" cy="212" r="15" class="node-unvisited"/>
+<text x="1077" y="216" class="text">17</text>
+<circle cx="145" cy="358" r="15" class="node-unvisited"/>
+<text x="145" y="362" class="text">18</text>
+<circle cx="240" cy="349" r="15" class="node-unvisited"/>
+<text x="240" y="353" class="text">19</text>
+<circle cx="401" cy="352" r="15" class="node-unvisited"/>
+<text x="401" y="356" class="text">20</text>
+<circle cx="449" cy="331" r="15" class="node-unvisited"/>
+<text x="449" y="335" class="text">21</text>
+<circle cx="626" cy="334" r="15" class="node-unvisited"/>
+<text x="626" y="338" class="text">22</text>
+<circle cx="673" cy="332" r="15" class="node-unvisited"/>
+<text x="673" y="336" class="text">23</text>
+<circle cx="853" cy="359" r="15" class="node-unvisited"/>
+<text x="853" y="363" class="text">24</text>
+<circle cx="901" cy="393" r="15" class="node-unvisited"/>
+<text x="901" y="397" class="text">25</text>
+<circle cx="1041" cy="324" r="15" class="node-unvisited"/>
+<text x="1041" y="328" class="text">26</text>
+<circle cx="142" cy="506" r="15" class="node-unvisited"/>
+<text x="142" y="510" class="text">27</text>
+<circle cx="299" cy="474" r="15" class="node-unvisited"/>
+<text x="299" y="478" class="text">28</text>
+<circle cx="339" cy="442" r="15" class="node-unvisited"/>
+<text x="339" y="446" class="text">29</text>
+<circle cx="432" cy="508" r="15" class="node-unvisited"/>
+<text x="432" y="512" class="text">30</text>
+<circle cx="557" cy="449" r="15" class="node-unvisited"/>
+<text x="557" y="453" class="text">31</text>
+<circle cx="721" cy="453" r="15" class="node-unvisited"/>
+<text x="721" y="457" class="text">32</text>
+<circle cx="812" cy="481" r="15" class="node-unvisited"/>
+<text x="812" y="485" class="text">33</text>
+<circle cx="921" cy="509" r="15" class="node-unvisited"/>
+<text x="921" y="513" class="text">34</text>
+<circle cx="1102" cy="484" r="15" class="node-unvisited"/>
+<text x="1102" y="488" class="text">35</text>
+<circle cx="65" cy="545" r="15" class="node-unvisited"/>
+<text x="65" y="549" class="text">36</text>
+<circle cx="233" cy="642" r="15" class="node-unvisited"/>
+<text x="233" y="646" class="text">37</text>
+<circle cx="349" cy="592" r="15" class="node-unvisited"/>
+<text x="349" y="596" class="text">38</text>
+<circle cx="433" cy="633" r="15" class="node-unvisited"/>
+<text x="433" y="637" class="text">39</text>
+<circle cx="571" cy="636" r="15" class="node-unvisited"/>
+<text x="571" y="640" class="text">40</text>
+<circle cx="660" cy="601" r="15" class="node-unvisited"/>
+<text x="660" y="605" class="text">41</text>
+<circle cx="824" cy="581" r="15" class="node-unvisited"/>
+<text x="824" y="585" class="text">42</text>
+<circle cx="987" cy="638" r="15" class="node-unvisited"/>
+<text x="987" y="642" class="text">43</text>
+<circle cx="1021" cy="629" r="15" class="node-unvisited"/>
+<text x="1021" y="633" class="text">44</text>
+<circle cx="68" cy="777" r="15" class="node-unvisited"/>
+<text x="68" y="781" class="text">45</text>
+<circle cx="227" cy="742" r="15" class="node-unvisited"/>
+<text x="227" y="746" class="text">46</text>
+<circle cx="398" cy="672" r="15" class="node-unvisited"/>
+<text x="398" y="676" class="text">47</text>
+<circle cx="434" cy="696" r="15" class="node-unvisited"/>
+<text x="434" y="700" class="text">48</text>
+<circle cx="628" cy="662" r="15" class="node-unvisited"/>
+<text x="628" y="666" class="text">49</text>
+<circle cx="656" cy="731" r="15" class="node-unvisited"/>
+<text x="656" y="735" class="text">50</text>
+<circle cx="781" cy="686" r="15" class="node-unvisited"/>
+<text x="781" y="690" class="text">51</text>
+<circle cx="936" cy="744" r="15" class="node-unvisited"/>
+<text x="936" y="748" class="text">52</text>
+<circle cx="1107" cy="757" r="15" class="node-unvisited"/>
+<text x="1107" y="761" class="text">53</text>
+</svg>
