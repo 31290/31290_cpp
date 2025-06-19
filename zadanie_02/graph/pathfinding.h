@@ -53,6 +53,7 @@ public:
 
     std::vector<int> getShortestPath(int startId, int targetId);
     int getShortestDistance(int startId, int targetId);
+    int getStepCount();
 };
 
 struct DijkstraNode
@@ -97,4 +98,5 @@ public:
     // Get shortest path between two nodes
     std::vector<int> getShortestPath(int startId, int targetId);
     int getShortestDistance(int startId, int targetId);
+    int getStepCount();
 };

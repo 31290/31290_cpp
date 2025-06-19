@@ -103,6 +103,12 @@ void DijkstraVisualizer::runDijkstra(int startId, int targetId)
     }
 }
 
+
+int DijkstraVisualizer::getStepCount()
+{
+    return steps.size();
+}
+
 void DijkstraVisualizer::captureState(Node *current, const std::priority_queue<PriorityQueueEntry,
                                                                                std::vector<PriorityQueueEntry>, std::greater<>> &pq)
 {
@@ -218,6 +224,10 @@ int AStarVisualizer::calculateHeuristic(Node *from, Node *to)
 
         return static_cast<int>(100 * projection); // scale for weight
     }
+    case 3: // Manhattan distance (for grid-like graphs)
+        return abs(dx) + abs(dy);
+    case 4: // Chebyshev distance (for grid-like graphs)
+        return std::max(abs(dx), abs(dy));
     default:
         return static_cast<int>(sqrt(dx * dx + dy * dy));
     }
@@ -386,4 +396,9 @@ int AStarVisualizer::getShortestDistance(int startId, int targetId)
 void AStarVisualizer::generateVisualization(const std::string &htmlFilename)
 {
     visualizer->generateHTML(htmlFilename, steps);
+}
+
+int AStarVisualizer::getStepCount()
+{
+    return steps.size();
 }

@@ -22,8 +22,8 @@ class SVGVisualizer
 private:
     Graph *graph;
     ViewBox viewBox;
-    int nodeRadius = 15;
-    int padding = 10;
+    static constexpr int nodeRadius = 15;
+    static constexpr int padding = 10;
 
     std::vector<Coords> displayCoords;
     

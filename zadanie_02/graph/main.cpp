@@ -5,7 +5,7 @@
 
 #define NEST 4
 #define COUNT 5
-#define HEURISTIC 3
+#define HEURISTIC 5
 
 std::string getHeuristic(int i)
 {
@@ -17,6 +17,10 @@ std::string getHeuristic(int i)
         return "Dot_Product";
     case 2:
         return "Progress_Factor";
+    case 3:
+        return "Manhattan";
+    case 4:
+        return "Chebyshev";
     default:
         return "Pythagorean";
     }
@@ -73,8 +77,9 @@ int main(int argc, char *argv[])
     }
     std::cout << "\nTotal distance: " << dijkstraDistance << "\n\n";
 
-    int astarDistance[3];
-    std::vector<int> astarPath[3];
+    int astarDistance[HEURISTIC];
+    std::vector<int> astarPath[HEURISTIC];
+    int astarStep[HEURISTIC];
 
     for (int heuristicType = 0; heuristicType < HEURISTIC; ++heuristicType)
     {
@@ -89,6 +94,7 @@ int main(int argc, char *argv[])
 
         astarPath[heuristicType] = astar.getShortestPath(startNode, targetNode);
         astarDistance[heuristicType] = astar.getShortestDistance(startNode, targetNode);
+        astarStep[heuristicType] = astar.getStepCount();
 
         std::cout << "A* shortest path (heuristic " << heuristicType << "): ";
         for (size_t i = 0; i < astarPath[heuristicType].size(); ++i)
@@ -101,10 +107,10 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "Algorithm comparison:\n";
-    std::cout << "Dijkstra - Distance: " << dijkstraDistance << ", Path length: " << dijkstraPath.size() << "\n";
+    std::cout << "Dijkstra - Distance: " << dijkstraDistance << ", Path length: " << dijkstraPath.size() << ", steps: " << dijkstra.getStepCount() << "\n";
     for (int i = 0; i < HEURISTIC; i++)
     {
-        std::cout << "A* " << getHeuristic(i) << " - Distance: " << astarDistance[i] << ", Path length: " << astarPath[i].size() << "\n";
+        std::cout << "A* " << getHeuristic(i) << " - Distance: " << astarDistance[i] << ", Path length: " << astarPath[i].size() << ", steps: " << astarStep[i] << "\n";
     }
 
     for (int i = 0; i < HEURISTIC; i++)
