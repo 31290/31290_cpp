@@ -52,14 +52,8 @@ public:
     Node *createNode(int id = -1, Coords coords = Coords());
     Node *getNode(int id);
     
-    // void removeNode(Node *node);
-    // void removeNode(int id);
-
     void createEdge(Node *source, Node *target);
     Edge *getEdge(Node *source, Node *target);
-
-    // void removeEdge(Node *source, Node *target);
-    // Edge *getEdge(Node *source, Node *target);
 
     void printGraph();
 };

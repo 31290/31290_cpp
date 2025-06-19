@@ -1,7 +1,15 @@
-#include <graph.h>
+#include "graph.h"
 #include <iostream>
+#include <cmath>
 
 Coords::Coords(int x, int y) : x(x), y(y) {}
+
+int Edge::calculateWeight(Coords source, Coords target)
+{
+    int dx = target.x - source.x;
+    int dy = target.y - source.y;
+    return static_cast<int>(sqrt(dx * dx + dy * dy));
+}
 
 Edge::Edge(Node *source, Node *target) : target(target)
 {
@@ -68,20 +76,24 @@ Graph::Graph() {}
 
 Graph::Graph(int nest, int count, int y, int x)
 {
+    count++;
     for (int i = 0; i < nest; ++i)
     {
         for(int j = 0; j < count; ++j)
         {
+            std::cout << "Creating node at (" << j * x << ", " << i * y << ")\n";
             int id = i * count + j;
             Coords coords(j * x, i * y);
             Node *node = createNode(id, coords);
-            if (i > 0) // Connect to the node above
+            if (i > 0)
             {
+                std::cout << "Connecting node " << id << " to node " << (i - 1) * count + j << "\n";
                 createEdge(node, findNodeById((i - 1) * count + j));
             }
-            if (j > 0) // Connect to the node to the left
+            if (j > 0)
             {
-                createEdge(node, findNodeById(i * nest + (j - 1)));
+                std::cout << "Connecting node " << id << " to node " << i * count + (j - 1) << "\n";
+                createEdge(node, findNodeById(i * count + (j - 1)));
             }
         }
     }
