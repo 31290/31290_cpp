@@ -42,6 +42,7 @@ private:
 public:
     SVGVisualizer(Graph *g);
     
+    std::string generateStartTargetLine(int startId, int targetId);
     void generateSVG(const std::string& filename, const RenderState& state = {});
     void generateHTML(const std::string& filename, const std::vector<RenderState>& states);
 };

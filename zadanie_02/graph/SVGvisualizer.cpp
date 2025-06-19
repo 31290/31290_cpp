@@ -21,6 +21,24 @@ SVGVisualizer::SVGVisualizer(Graph *g) : graph(g)
     calculateDisplayCoords();
 }
 
+std::string SVGVisualizer::generateStartTargetLine(int startId, int targetId)
+{
+    if (startId < 0 || targetId < 0 || startId >= graph->nodes.size() || targetId >= graph->nodes.size())
+    {
+        return "";
+    }
+
+    const Coords &start = displayCoords[startId];
+    const Coords &target = displayCoords[targetId];
+
+    std::ostringstream line;
+    line << "<line x1=\"" << start.x << "\" y1=\"" << start.y
+         << "\" x2=\"" << target.x << "\" y2=\"" << target.y
+         << "\" stroke=\"purple\" stroke-width=\"2\" stroke-dasharray=\"5,5\" opacity=\"0.7\"/>\n";
+
+    return line.str();
+}
+
 void SVGVisualizer::calculateViewBox()
 {
     if (graph->nodes.empty())
@@ -192,16 +210,17 @@ void SVGVisualizer::generateSVG(const std::string &filename, const RenderState &
 
 void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<RenderState> &states)
 {
+    std::string title = filename.substr(filename.find('_') + 1, filename.find('.') - filename.find('_') - 1);
     std::ostringstream html;
     html << "<!DOCTYPE html>\n<html><head>\n"
-         << "<title>Graph Pathfinding Visualization</title>\n"
+         << "<title>" << title << " Pathfinding Visualization</title>\n"
          << "<style>\n"
          << "body { font-family: Arial; margin: 20px; }\n"
          << ".controls { margin: 20px 0; }\n"
          << "button { margin: 5px; padding: 10px; font-size: 14px; }\n"
          << "#info { margin: 10px 0; font-weight: bold; }\n"
          << "</style>\n</head><body>\n"
-         << "<h1>Graph Pathfinding Visualization</h1>\n"
+         << "<h1>" << title << " Pathfinding Visualization</h1>\n"
          << "<div class=\"controls\">\n"
          << "<button onclick=\"prevStep()\">Previous</button>\n"
          << "<button onclick=\"nextStep()\">Next</button>\n"
@@ -218,6 +237,26 @@ void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<
              << "\" height=\"" << viewBox.height + nodeRadius + 5
              << "\" style=\"display:" << (i == 0 ? "block" : "none")
              << ";border:1px solid #ccc;\">\n";
+
+        if (states.size() > 1)
+        {
+            int startId = -1, targetId = -1;
+            if (!states[i].currentPath.empty())
+            {
+                startId = states[i].currentPath.front();
+                targetId = states[i].currentPath.back();
+            }
+            else if (i > 0 && !states[states.size() - 1].currentPath.empty())
+            {
+                startId = states[states.size() - 1].currentPath.front();
+                targetId = states[states.size() - 1].currentPath.back();
+            }
+            if (startId != -1 && targetId != -1)
+            {
+                html << generateStartTargetLine(startId, targetId);
+            }
+        }
+
         html << generateSVGContent(states[i]);
         html << "</svg>\n";
     }
