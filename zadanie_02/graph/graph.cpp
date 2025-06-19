@@ -82,24 +82,22 @@ Graph::Graph(int nest, int count, int y, int x)
     {
         for (int j = 0; j < count; ++j)
         {
-            // std::cout << "Creating node at (" << j * x << ", " << i * y << ")\n";
             int id = i * count + j;
             Coords coords(j * (x - 1) + rand() % x + 1, i * (y - 1) + rand() % y + 1);
             Node *node = createNode(id, coords);
             if (i > 0)
             {
-                // std::cout << "Connecting node " << id << " to node " << (i - 1) * count + j << "\n";
                 createEdge(node, findNodeById((i - 1) * count + j));
             }
             if (j > 0)
             {
-                // std::cout << "Connecting node " << id << " to node " << i * count + (j - 1) << "\n";
                 createEdge(node, findNodeById(i * count + (j - 1)));
             }
         }
     }
 
     int totalNodes = nest * count;
+    // std::cout << "Total node count: " << totalNodes << "\n";
     int extraConnections = std::max(1, totalNodes / 8); // ~12.5% of nodes get extra connections
 
     for (int i = 0; i < extraConnections; ++i)

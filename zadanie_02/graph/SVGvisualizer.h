@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <unordered_map>
 
 struct ViewBox {
     int x, y, width, height;
@@ -11,7 +12,9 @@ struct ViewBox {
 struct RenderState {
     int currentNode = -1;
     std::vector<int> visitedNodes;
+    std::vector<int> queuedNodes;
     std::vector<int> currentPath;
+    std::unordered_map<int, int> distances;
 };
 
 class SVGVisualizer

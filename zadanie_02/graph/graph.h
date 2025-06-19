@@ -39,11 +39,11 @@ struct Node
 class Graph
 {
 private:
-    Node* findNodeById(int id);
     Coords maxCoords;
     Coords minCoords;
 
 public:
+    Node* findNodeById(int id);
     std::vector<Node *> nodes;
 
     Graph();

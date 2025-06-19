@@ -5,12 +5,14 @@
 const char *SVGVisualizer::CSS_STYLES = R"(
 .node-unvisited { fill: white; stroke: black; stroke-width: 2; }
 .node-visited { fill: lightblue; stroke: black; stroke-width: 2; }
+.node-queued { fill: orange; stroke: black; stroke-width: 2; }
 .node-current { fill: yellow; stroke: black; stroke-width: 3; }
 .node-path { fill: lightgreen; stroke: black; stroke-width: 2; }
 .edge { stroke: gray; stroke-width: 1; }
 .edge-path { stroke: red; stroke-width: 3; }
 .text { font-family: Arial; font-size: 12px; text-anchor: middle; }
 .weight-text { font-family: Arial; font-size: 10px; text-anchor: middle; fill: blue; }
+.distance-text { font-family: Arial; font-size: 8px; text-anchor: middle; fill: red; font-weight: bold; }
 )";
 
 SVGVisualizer::SVGVisualizer(Graph *g) : graph(g)
@@ -44,8 +46,8 @@ void SVGVisualizer::calculateViewBox()
     viewBox.y = minY - padding - nodeRadius;
     viewBox.width = (maxX - minX) + 2 * (padding + nodeRadius);
     viewBox.height = (maxY - minY) + 2 * (padding + nodeRadius);
-    std::cout << maxY << " " << minY << " " << maxX << " " << minX << std::endl;
-    std::cout << "ViewBox: " << viewBox.x << ", " << viewBox.y << ", " << viewBox.width << ", " << viewBox.height << std::endl;
+    // std::cout << maxY << " " << minY << " " << maxX << " " << minX << std::endl;
+    // std::cout << "ViewBox: " << viewBox.x << ", " << viewBox.y << ", " << viewBox.width << ", " << viewBox.height << std::endl;
 }
 
 void SVGVisualizer::calculateDisplayCoords()
@@ -125,6 +127,13 @@ std::string SVGVisualizer::generateNodesSVG(const RenderState &state)
 
         nodes << "<text x=\"" << pos.x << "\" y=\"" << pos.y + 4
               << "\" class=\"text\">" << node->id << "</text>\n";
+
+        auto distIt = state.distances.find(node->id);
+        if (distIt != state.distances.end() && distIt->second != INT_MAX)
+        {
+            nodes << "<text x=\"" << pos.x << "\" y=\"" << pos.y - nodeRadius - 5
+                  << "\" class=\"distance-text\">" << distIt->second << "</text>\n";
+        }
     }
     return nodes.str();
 }
@@ -144,6 +153,12 @@ std::string SVGVisualizer::getNodeClass(int nodeId, const RenderState &state)
     {
         if (visitedNode == nodeId)
             return "node-visited";
+    }
+
+    for (int queuedNode : state.queuedNodes)
+    {
+        if (queuedNode == nodeId)
+            return "node-queued";
     }
 
     return "node-unvisited";
@@ -190,6 +205,8 @@ void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<
          << "<div class=\"controls\">\n"
          << "<button onclick=\"prevStep()\">Previous</button>\n"
          << "<button onclick=\"nextStep()\">Next</button>\n"
+         << "<button onclick=\"lastStep()\">Last</button>\n"
+         << "<button onclick=\"multStep()\">Mult 10</button>\n"
          << "<button onclick=\"reset()\">Reset</button>\n"
          << "</div>\n"
          << "<div id=\"info\">Step: <span id=\"stepCounter\">0</span> / "
@@ -197,8 +214,8 @@ void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<
 
     for (size_t i = 0; i < states.size(); ++i)
     {
-        html << "<svg id=\"step" << i << "\" width=\"" << viewBox.width
-             << "\" height=\"" << viewBox.height
+        html << "<svg id=\"step" << i << "\" width=\"" << viewBox.width + nodeRadius + 5
+             << "\" height=\"" << viewBox.height + nodeRadius + 5
              << "\" style=\"display:" << (i == 0 ? "block" : "none")
              << ";border:1px solid #ccc;\">\n";
         html << generateSVGContent(states[i]);
@@ -217,6 +234,8 @@ void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<
          << "}\n"
          << "function nextStep() { if (currentStep < totalSteps - 1) { currentStep++; showStep(currentStep); } }\n"
          << "function prevStep() { if (currentStep > 0) { currentStep--; showStep(currentStep); } }\n"
+         << "function multStep() { if (currentStep < totalSteps - 10) { currentStep += 10; showStep(currentStep); } else { currentStep = totalSteps - 1; showStep(currentStep); } }\n"
+         << "function lastStep() { if (currentStep < totalSteps - 1) { currentStep = totalSteps - 1; showStep(currentStep); } }\n"
          << "function reset() { currentStep = 0; showStep(currentStep); }\n"
          << "</script>\n</body></html>\n";
 
