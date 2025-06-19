@@ -60,9 +60,9 @@ Edge *Node::getSmallestEdge(int minWeight, int count)
     return smallest;
 }
 
-std::vector<Node*> Node::getUnvisitedNeighbours()
+std::vector<Node *> Node::getUnvisitedNeighbours()
 {
-    std::vector<Node*> unvisited;
+    std::vector<Node *> unvisited;
     for (Edge &edge : edges)
     {
         if (!edge.target->visited)
@@ -80,11 +80,11 @@ Graph::Graph(int nest, int count, int y, int x)
     count++;
     for (int i = 0; i < nest; ++i)
     {
-        for(int j = 0; j < count; ++j)
+        for (int j = 0; j < count; ++j)
         {
             // std::cout << "Creating node at (" << j * x << ", " << i * y << ")\n";
             int id = i * count + j;
-            Coords coords(j * (x-1) + rand() % x + 1, i * (y-1) + rand() % y + 1);
+            Coords coords(j * (x - 1) + rand() % x + 1, i * (y - 1) + rand() % y + 1);
             Node *node = createNode(id, coords);
             if (i > 0)
             {
@@ -98,9 +98,37 @@ Graph::Graph(int nest, int count, int y, int x)
             }
         }
     }
+
+    int totalNodes = nest * count;
+    int extraConnections = std::max(1, totalNodes / 8); // ~12.5% of nodes get extra connections
+
+    for (int i = 0; i < extraConnections; ++i)
+    {
+        Node *source = nodes[rand() % totalNodes];
+        Node *target = nodes[rand() % totalNodes];
+
+        // Don't connect to self or already connected nodes
+        if (source == target)
+            target++;
+
+        bool alreadyConnected = false;
+        for (Edge &edge : source->edges)
+        {
+            if (edge.target == target)
+            {
+                alreadyConnected = true;
+                break;
+            }
+        }
+
+        if (!alreadyConnected)
+        {
+            createEdge(source, target);
+        }
+    }
 }
 
-Node* Graph::findNodeById(int id)
+Node *Graph::findNodeById(int id)
 {
     for (Node *node : nodes)
     {

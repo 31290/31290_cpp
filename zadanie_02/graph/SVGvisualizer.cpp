@@ -1,16 +1,29 @@
 #include "SVGVisualizer.h"
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include "graph.h"
+#include <sstream>
 
-void SVGVisualizer::calculateDimensions()
+const char *SVGVisualizer::CSS_STYLES = R"(
+.node-unvisited { fill: white; stroke: black; stroke-width: 2; }
+.node-visited { fill: lightblue; stroke: black; stroke-width: 2; }
+.node-current { fill: yellow; stroke: black; stroke-width: 3; }
+.node-path { fill: lightgreen; stroke: black; stroke-width: 2; }
+.edge { stroke: gray; stroke-width: 1; }
+.edge-path { stroke: red; stroke-width: 3; }
+.text { font-family: Arial; font-size: 12px; text-anchor: middle; }
+.weight-text { font-family: Arial; font-size: 10px; text-anchor: middle; fill: blue; }
+)";
+
+SVGVisualizer::SVGVisualizer(Graph *g) : graph(g)
+{
+    calculateViewBox();
+    calculateDisplayCoords();
+}
+
+void SVGVisualizer::calculateViewBox()
 {
     if (graph->nodes.empty())
     {
-        width = 400;
-        height = 400;
+        viewBox = {0, 0, 400, 400};
         return;
     }
 
@@ -27,228 +40,107 @@ void SVGVisualizer::calculateDimensions()
         maxY = std::max(maxY, node->coords.y);
     }
 
-    width = maxX - minX + 2 * (padding + nodeRadius);
-    height = maxY - minY + 2 * (padding + nodeRadius);
+    viewBox.x = minX - padding - nodeRadius;
+    viewBox.y = minY - padding - nodeRadius;
+    viewBox.width = (maxX - minX) + 2 * (padding + nodeRadius);
+    viewBox.height = (maxY - minY) + 2 * (padding + nodeRadius);
+    std::cout << maxY << " " << minY << " " << maxX << " " << minX << std::endl;
+    std::cout << "ViewBox: " << viewBox.x << ", " << viewBox.y << ", " << viewBox.width << ", " << viewBox.height << std::endl;
+}
 
-    // Center the graph by adjusting all node coordinates
-    int offsetX = padding + nodeRadius - minX;
-    int offsetY = padding + nodeRadius - minY;
+void SVGVisualizer::calculateDisplayCoords()
+{
+    displayCoords.reserve(graph->nodes.size());
+    int offsetX = padding + nodeRadius - viewBox.x;
+    int offsetY = padding + nodeRadius - viewBox.y;
 
     for (Node *node : graph->nodes)
     {
-        node->coords.x += offsetX;
-        node->coords.y += offsetY;
+        displayCoords.emplace_back(node->coords.x + offsetX, node->coords.y + offsetY);
     }
 }
 
-SVGVisualizer::SVGVisualizer(Graph *g) : graph(g)
+std::string SVGVisualizer::generateSVGContent(const RenderState &state)
 {
-    calculateDimensions();
+    std::ostringstream svg;
+    svg << "<style>" << CSS_STYLES << "</style>\n";
+    svg << generateEdgesSVG(state.currentPath);
+    svg << generateNodesSVG(state);
+    return svg.str();
 }
 
-void SVGVisualizer::generateSVG(const std::string &filename, const std::vector<int> &visitedNodes,
-                                const std::vector<int> &currentPath, int currentNode)
+std::string SVGVisualizer::generateEdgesSVG(const std::vector<int> &currentPath)
 {
+    std::ostringstream edges;
 
-    std::remove(filename.c_str());
-    std::ofstream file(filename);
-    if (!file.is_open())
+    for (size_t i = 0; i < graph->nodes.size(); ++i)
     {
-        std::cerr << "Error opening file: " << filename << std::endl;
-        return;
-    }
-    else
-    {
-        std::cout << "Successfully opened file: " << filename << std::endl;
-    }
-
-    file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    file << "<svg width=\"" << width << "\" height=\"" << height << "\" xmlns=\"http://www.w3.org/2000/svg\">\n";
-    file << "<style>\n";
-    file << ".node-unvisited { fill: white; stroke: black; stroke-width: 2; }\n";
-    file << ".node-visited { fill: lightblue; stroke: black; stroke-width: 2; }\n";
-    file << ".node-current { fill: yellow; stroke: black; stroke-width: 3; }\n";
-    file << ".node-path { fill: lightgreen; stroke: black; stroke-width: 2; }\n";
-    file << ".edge { stroke: gray; stroke-width: 1; }\n";
-    file << ".edge-path { stroke: red; stroke-width: 3; }\n";
-    file << ".text { font-family: Arial; font-size: 12px; text-anchor: middle; }\n";
-    file << ".weight-text { font-family: Arial; font-size: 10px; text-anchor: middle; fill: blue; }\n";
-    file << "</style>\n";
-
-    std::cout << "Drawing edges...\n";
-    // Draw edges first
-    drawEdges(file, currentPath);
-
-    std::cout << "Drawing nodes...\n";
-    // Draw nodes on top
-    drawNodes(file, visitedNodes, currentPath, currentNode);
-
-    file << "</svg>\n";
-    file.close();
-}
-
-void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<std::vector<int>> &pathfindingSteps,
-                                 const std::vector<std::vector<int>> &visitedSteps, const std::vector<int> &currentNodes)
-{
-    std::ofstream file(filename);
-
-    file << "<!DOCTYPE html>\n<html>\n<head>\n";
-    file << "<title>Graph Pathfinding Visualization</title>\n";
-    file << "<style>\n";
-    file << "body { font-family: Arial; margin: 20px; }\n";
-    file << ".controls { margin: 20px 0; }\n";
-    file << "button { margin: 5px; padding: 10px; font-size: 14px; }\n";
-    file << "#info { margin: 10px 0; font-weight: bold; }\n";
-    file << "</style>\n";
-    file << "</head>\n<body>\n";
-    file << "<h1>Graph Pathfinding Visualization</h1>\n";
-    file << "<div class=\"controls\">\n";
-    file << "<button onclick=\"prevStep()\">Previous</button>\n";
-    file << "<button onclick=\"nextStep()\">Next</button>\n";
-    file << "<button onclick=\"reset()\">Reset</button>\n";
-    file << "</div>\n";
-    file << "<div id=\"info\">Step: <span id=\"stepCounter\">0</span> / " << pathfindingSteps.size() - 1 << "</div>\n";
-
-    // Generate SVG for each step
-    for (int i = 0; i < pathfindingSteps.size(); ++i)
-    {
-        file << "<svg id=\"step" << i << "\" width=\"" << width << "\" height=\"" << height << "\" style=\"display:" << (i == 0 ? "block" : "none") << ";border:1px solid #ccc;\">\n";
-
-        file << "<style>\n";
-        file << ".node-unvisited { fill: white; stroke: black; stroke-width: 2; }\n";
-        file << ".node-visited { fill: lightblue; stroke: black; stroke-width: 2; }\n";
-        file << ".node-current { fill: yellow; stroke: black; stroke-width: 3; }\n";
-        file << ".node-path { fill: lightgreen; stroke: black; stroke-width: 2; }\n";
-        file << ".edge { stroke: gray; stroke-width: 1; }\n";
-        file << ".edge-path { stroke: red; stroke-width: 3; }\n";
-        file << ".text { font-family: Arial; font-size: 12px; text-anchor: middle; }\n";
-        file << ".weight-text { font-family: Arial; font-size: 10px; text-anchor: middle; fill: blue; }\n";
-        file << "</style>\n";
-
-        drawEdges(file, pathfindingSteps[i]);
-        drawNodes(file, visitedSteps[i], pathfindingSteps[i], i < currentNodes.size() ? currentNodes[i] : -1);
-
-        file << "</svg>\n";
-    }
-
-    file << "\n<script>\n";
-    file << "let currentStep = 0;\n";
-    file << "const totalSteps = " << pathfindingSteps.size() << ";\n";
-    file << "let autoInterval = null;\n\n";
-
-    file << "function showStep(step) {\n";
-    file << "  for (let i = 0; i < totalSteps; i++) {\n";
-    file << "    document.getElementById('step' + i).style.display = 'none';\n";
-    file << "  }\n";
-    file << "  document.getElementById('step' + step).style.display = 'block';\n";
-    file << "  document.getElementById('stepCounter').textContent = step;\n";
-    file << "}\n\n";
-
-    file << "function nextStep() {\n";
-    file << "  if (currentStep < totalSteps - 1) {\n";
-    file << "    currentStep++;\n";
-    file << "    showStep(currentStep);\n";
-    file << "  }\n";
-    file << "}\n\n";
-
-    file << "function prevStep() {\n";
-    file << "  if (currentStep > 0) {\n";
-    file << "    currentStep--;\n";
-    file << "    showStep(currentStep);\n";
-    file << "  }\n";
-    file << "}\n\n";
-
-    file << "function autoPlay() {\n";
-    file << "  if (autoInterval) {\n";
-    file << "    clearInterval(autoInterval);\n";
-    file << "    autoInterval = null;\n";
-    file << "  } else {\n";
-    file << "    autoInterval = setInterval(() => {\n";
-    file << "      if (currentStep < totalSteps - 1) {\n";
-    file << "        nextStep();\n";
-    file << "      } else {\n";
-    file << "        clearInterval(autoInterval);\n";
-    file << "        autoInterval = null;\n";
-    file << "      }\n";
-    file << "    }, 1000);\n";
-    file << "  }\n";
-    file << "}\n\n";
-
-    file << "function reset() {\n";
-    file << "  if (autoInterval) {\n";
-    file << "    clearInterval(autoInterval);\n";
-    file << "    autoInterval = null;\n";
-    file << "  }\n";
-    file << "  currentStep = 0;\n";
-    file << "  showStep(currentStep);\n";
-    file << "}\n";
-
-    file << "</script>\n";
-    file << "</body>\n</html>\n";
-    file.close();
-}
-
-void SVGVisualizer::drawEdges(std::ofstream &file, const std::vector<int> &currentPath)
-{
-    std::cout << "Drawing edges in a function...\n";
-    for (Node *node : graph->nodes)
-    {
+        Node *node = graph->nodes[i];
         for (Edge &edge : node->edges)
         {
-            if (node->id < edge.target->id)
+            size_t targetIdx = 0;
+            for (size_t j = 0; j < graph->nodes.size(); ++j)
             {
+                if (graph->nodes[j] == edge.target)
+                {
+                    targetIdx = j;
+                    break;
+                }
+            }
 
-                std::cout << "Drawing edge from " << node->id << " to " << edge.target->id << "\n";
-                bool isInPath = isEdgeInPath(node->id, edge.target->id, currentPath);
+            if (i < targetIdx)
+            {
+                bool inPath = isEdgeInPath(node->id, edge.target->id, currentPath);
+                std::string edgeClass = inPath ? "edge-path" : "edge";
 
-                std::cout << "Edge " << node->id << " -> " << edge.target->id << (isInPath ? " is in the current path." : " is not in the current path.") << "\n";
+                const Coords &start = displayCoords[i];
+                const Coords &end = displayCoords[targetIdx];
 
-                std::string edgeClass = isInPath ? "edge-path" : "edge";
+                edges << "<line x1=\"" << start.x << "\" y1=\"" << start.y
+                      << "\" x2=\"" << end.x << "\" y2=\"" << end.y
+                      << "\" class=\"" << edgeClass << "\"/>\n";
 
-                file << "<line x1=\"" << node->coords.x << "\" y1=\"" << node->coords.y
-                     << "\" x2=\"" << edge.target->coords.x << "\" y2=\"" << edge.target->coords.y
-                     << "\" class=\"" << edgeClass << "\"/>\n";
-
-                // Draw weight
-                int midX = (node->coords.x + edge.target->coords.x) / 2;
-                int midY = (node->coords.y + edge.target->coords.y) / 2;
-                file << "<text x=\"" << midX << "\" y=\"" << midY << "\" class=\"weight-text\">"
-                     << edge.weight << "</text>\n";
+                int midX = (start.x + end.x) / 2;
+                int midY = (start.y + end.y) / 2;
+                edges << "<text x=\"" << midX << "\" y=\"" << midY
+                      << "\" class=\"weight-text\">" << edge.weight << "</text>\n";
             }
         }
     }
-    std::cout << "Finished drawing edges.\n";
+    return edges.str();
 }
 
-void SVGVisualizer::drawNodes(std::ofstream &file, const std::vector<int> &visitedNodes,
-                              const std::vector<int> &currentPath, int currentNode)
+std::string SVGVisualizer::generateNodesSVG(const RenderState &state)
 {
-    for (Node *node : graph->nodes)
+    std::ostringstream nodes;
+
+    for (size_t i = 0; i < graph->nodes.size(); ++i)
     {
-        std::string nodeClass = getNodeClass(node->id, visitedNodes, currentPath, currentNode);
+        Node *node = graph->nodes[i];
+        const Coords &pos = displayCoords[i];
+        std::string nodeClass = getNodeClass(node->id, state);
 
-        file << "<circle cx=\"" << node->coords.x << "\" cy=\"" << node->coords.y
-             << "\" r=\"" << nodeRadius << "\" class=\"" << nodeClass << "\"/>\n";
+        nodes << "<circle cx=\"" << pos.x << "\" cy=\"" << pos.y
+              << "\" r=\"" << nodeRadius << "\" class=\"" << nodeClass << "\"/>\n";
 
-        file << "<text x=\"" << node->coords.x << "\" y=\"" << node->coords.y + 4
-             << "\" class=\"text\">" << node->id << "</text>\n";
+        nodes << "<text x=\"" << pos.x << "\" y=\"" << pos.y + 4
+              << "\" class=\"text\">" << node->id << "</text>\n";
     }
+    return nodes.str();
 }
 
-
-std::string SVGVisualizer::getNodeClass(int nodeId, const std::vector<int> &visitedNodes,
-                                        const std::vector<int> &currentPath, int currentNode)
+std::string SVGVisualizer::getNodeClass(int nodeId, const RenderState &state)
 {
-    if (nodeId == currentNode)
+    if (nodeId == state.currentNode)
         return "node-current";
 
-    for (int pathNode : currentPath)
+    for (int pathNode : state.currentPath)
     {
         if (pathNode == nodeId)
             return "node-path";
     }
 
-    for (int visitedNode : visitedNodes)
+    for (int visitedNode : state.visitedNodes)
     {
         if (visitedNode == nodeId)
             return "node-visited";
@@ -259,10 +151,10 @@ std::string SVGVisualizer::getNodeClass(int nodeId, const std::vector<int> &visi
 
 bool SVGVisualizer::isEdgeInPath(int from, int to, const std::vector<int> &path)
 {
-    if (path.empty())
+    if (path.size() < 2)
         return false;
 
-    for (int i = 0; i < path.size() - 1; ++i)
+    for (size_t i = 0; i < path.size() - 1; ++i)
     {
         if ((path[i] == from && path[i + 1] == to) ||
             (path[i] == to && path[i + 1] == from))
@@ -271,4 +163,63 @@ bool SVGVisualizer::isEdgeInPath(int from, int to, const std::vector<int> &path)
         }
     }
     return false;
+}
+
+void SVGVisualizer::generateSVG(const std::string &filename, const RenderState &state)
+{
+    std::ofstream file(filename);
+    file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    file << "<svg width=\"" << viewBox.width + nodeRadius + 5 << "\" height=\"" << viewBox.height + nodeRadius + 5
+         << "\" xmlns=\"http://www.w3.org/2000/svg\">\n";
+    file << generateSVGContent(state);
+    file << "</svg>\n";
+}
+
+void SVGVisualizer::generateHTML(const std::string &filename, const std::vector<RenderState> &states)
+{
+    std::ostringstream html;
+    html << "<!DOCTYPE html>\n<html><head>\n"
+         << "<title>Graph Pathfinding Visualization</title>\n"
+         << "<style>\n"
+         << "body { font-family: Arial; margin: 20px; }\n"
+         << ".controls { margin: 20px 0; }\n"
+         << "button { margin: 5px; padding: 10px; font-size: 14px; }\n"
+         << "#info { margin: 10px 0; font-weight: bold; }\n"
+         << "</style>\n</head><body>\n"
+         << "<h1>Graph Pathfinding Visualization</h1>\n"
+         << "<div class=\"controls\">\n"
+         << "<button onclick=\"prevStep()\">Previous</button>\n"
+         << "<button onclick=\"nextStep()\">Next</button>\n"
+         << "<button onclick=\"reset()\">Reset</button>\n"
+         << "</div>\n"
+         << "<div id=\"info\">Step: <span id=\"stepCounter\">0</span> / "
+         << states.size() - 1 << "</div>\n";
+
+    for (size_t i = 0; i < states.size(); ++i)
+    {
+        html << "<svg id=\"step" << i << "\" width=\"" << viewBox.width
+             << "\" height=\"" << viewBox.height
+             << "\" style=\"display:" << (i == 0 ? "block" : "none")
+             << ";border:1px solid #ccc;\">\n";
+        html << generateSVGContent(states[i]);
+        html << "</svg>\n";
+    }
+
+    html << "<script>\n"
+         << "let currentStep = 0;\n"
+         << "const totalSteps = " << states.size() << ";\n"
+         << "function showStep(step) {\n"
+         << "  for (let i = 0; i < totalSteps; i++) {\n"
+         << "    document.getElementById('step' + i).style.display = 'none';\n"
+         << "  }\n"
+         << "  document.getElementById('step' + step).style.display = 'block';\n"
+         << "  document.getElementById('stepCounter').textContent = step;\n"
+         << "}\n"
+         << "function nextStep() { if (currentStep < totalSteps - 1) { currentStep++; showStep(currentStep); } }\n"
+         << "function prevStep() { if (currentStep > 0) { currentStep--; showStep(currentStep); } }\n"
+         << "function reset() { currentStep = 0; showStep(currentStep); }\n"
+         << "</script>\n</body></html>\n";
+
+    std::ofstream file(filename);
+    file << html.str();
 }
