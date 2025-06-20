@@ -29,11 +29,14 @@ std::string getHeuristic(int i)
 
 int main(int argc, char *argv[])
 {
+    // Seed RNG
     srand(time(nullptr));
 
     int targetNode = NEST * (COUNT + 1) - 1;
     int startNode = STARTNODE;
+    
     Graph graph;
+
     if (argc > 2)
     {
         graph = Graph(strtol(argv[1], nullptr, 10), strtol(argv[2], nullptr, 10), 120, 120);
@@ -49,7 +52,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        // graph = Graph(NEST, COUNT, 120, 120);
+        graph = Graph(NEST, COUNT, 120, 120);
     }
 
     // graph.createNode(0, Coords(100, 100));
@@ -68,6 +71,7 @@ int main(int argc, char *argv[])
     // graph.createEdge(2, 3);
 
 
+    // Clamp targetNode to valid range
     targetNode = std::min(targetNode, (int)graph.nodes.size() - 1);
 
 
