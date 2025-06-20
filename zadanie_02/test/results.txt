@@ -1,0 +1,64 @@
+HEURISTIC PERFORMANCE ANALYSIS
+=============================
+
+=== StraightLine ===
+Start: 0, Target: 9
+Dijkstra: distance=540, steps=21
+Pythagorean: distance=540, steps=21, optimal=YES
+DotProduct: distance=540, steps=21, optimal=YES
+Manhattan: distance=540, steps=21, optimal=YES
+Chebyshev: distance=540, steps=21, optimal=YES
+BEST: Pythagorean (steps: 21)
+WORST: Pythagorean (steps: 21)
+
+=== LShape ===
+Start: 0, Target: 15
+Dijkstra: distance=840, steps=33
+Pythagorean: distance=840, steps=33, optimal=YES
+DotProduct: distance=840, steps=33, optimal=YES
+Manhattan: distance=840, steps=33, optimal=YES
+Chebyshev: distance=840, steps=33, optimal=YES
+BEST: Pythagorean (steps: 33)
+WORST: Pythagorean (steps: 33)
+
+=== GridDiagonal ===
+Start: 0, Target: 35
+Dijkstra: distance=420, steps=73
+Pythagorean: distance=420, steps=31, optimal=YES
+DotProduct: distance=420, steps=31, optimal=YES
+Manhattan: distance=420, steps=31, optimal=YES
+Chebyshev: distance=420, steps=41, optimal=YES
+BEST: Pythagorean (steps: 31)
+WORST: Chebyshev (steps: 41)
+
+=== SpiralTrap ===
+Start: 0, Target: 16
+Dijkstra: distance=960, steps=35
+Pythagorean: distance=960, steps=35, optimal=YES
+DotProduct: distance=960, steps=35, optimal=YES
+Manhattan: distance=960, steps=35, optimal=YES
+Chebyshev: distance=960, steps=35, optimal=YES
+BEST: Pythagorean (steps: 35)
+WORST: Pythagorean (steps: 35)
+
+=== MazeDeadEnds ===
+Start: 0, Target: 11
+Dijkstra: distance=480, steps=25
+Pythagorean: distance=480, steps=25, optimal=YES
+DotProduct: distance=480, steps=25, optimal=YES
+Manhattan: distance=480, steps=25, optimal=YES
+Chebyshev: distance=480, steps=25, optimal=YES
+BEST: Pythagorean (steps: 25)
+WORST: Pythagorean (steps: 25)
+
+
+SUMMARY ANALYSIS
+================
+
+Algorithm Performance:
+AStar_Chebyshev: 5/5 optimal (100.0%), wins: 0
+AStar_DotProduct: 5/5 optimal (100.0%), wins: 0
+AStar_Manhattan: 5/5 optimal (100.0%), wins: 0
+AStar_Pythagorean: 5/5 optimal (100.0%), wins: 5
+
+OVERALL CHAMPION: AStar_Pythagorean (won 5 scenarios)

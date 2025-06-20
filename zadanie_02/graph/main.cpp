@@ -3,9 +3,10 @@
 #include "pathfinding.h"
 #include <iostream>
 
-#define NEST 8
-#define COUNT 10
+#define NEST 2
+#define COUNT 3
 #define HEURISTIC 5
+#define STARTNODE 0
 
 std::string getHeuristic(int i)
 {
@@ -29,16 +30,27 @@ std::string getHeuristic(int i)
 int main(int argc, char *argv[])
 {
     srand(time(nullptr));
-    Graph graph(NEST, COUNT, 120, 120);
 
-    if (argc > 1)
+    int targetNode = NEST * (COUNT + 1) - 1;
+    int startNode = STARTNODE;
+    Graph graph;
+    if (argc > 2)
     {
-        Coords coords = {-strtol(argv[1], nullptr, 10), -strtol(argv[1], nullptr, 10)};
-        Node *bypass = graph.createNode(graph.nodes.size(), coords);
-        bypass->createEdge(graph.findNodeById(0));
-        bypass->createEdge(graph.findNodeById(NEST * (COUNT + 1) - 1));
+        graph = Graph(strtol(argv[1], nullptr, 10), strtol(argv[2], nullptr, 10), 120, 120);
+        targetNode = strtol(argv[2], nullptr, 10) * (strtol(argv[1], nullptr, 10) + 1) - 1;
+        if (argc > 3)
+        {
+            startNode = strtol(argv[3], nullptr, 10);
+        }
+        if (argc > 4)
+        {
+            targetNode = strtol(argv[4], nullptr, 10);
+        }
     }
-    /**/
+    else
+    {
+        graph = Graph(NEST, COUNT, 120, 120);
+    }
 
     for (Node *node : graph.nodes)
     {
@@ -51,13 +63,9 @@ int main(int argc, char *argv[])
     std::cout << "Graph created with " << graph.nodes.size() << " nodes\n";
     std::cout << "\n\n";
 
-    int startNode = 37;
-
     RenderState staticState = {startNode};
     visualizer.generateSVG("graph.svg", staticState);
     std::cout << "Generated static graph.svg\n";
-
-    int targetNode = NEST * (COUNT + 1) - 1;
 
     DijkstraVisualizer dijkstra(&graph, &visualizer);
 
