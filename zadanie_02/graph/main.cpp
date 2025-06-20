@@ -3,8 +3,8 @@
 #include "pathfinding.h"
 #include <iostream>
 
-#define NEST 4
-#define COUNT 5
+#define NEST 8
+#define COUNT 10
 #define HEURISTIC 5
 
 std::string getHeuristic(int i)
@@ -51,11 +51,12 @@ int main(int argc, char *argv[])
     std::cout << "Graph created with " << graph.nodes.size() << " nodes\n";
     std::cout << "\n\n";
 
-    RenderState staticState = {0};
+    int startNode = 37;
+
+    RenderState staticState = {startNode};
     visualizer.generateSVG("graph.svg", staticState);
     std::cout << "Generated static graph.svg\n";
 
-    int startNode = 0;
     int targetNode = NEST * (COUNT + 1) - 1;
 
     DijkstraVisualizer dijkstra(&graph, &visualizer);

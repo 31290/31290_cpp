@@ -47,7 +47,7 @@ public:
     std::vector<Node *> nodes;
 
     Graph();
-    Graph(int nest = 3, int count = 3, int y = 5, int x = 5);
+    Graph(int nest, int count, int y = 5, int x = 5);
 
     Node *createNode(int id = -1, Coords coords = Coords());
     Node *getNode(int id);

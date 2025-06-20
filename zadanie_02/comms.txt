@@ -1,0 +1,3 @@
+g++ .\test.cpp .\graph.cpp .\SVGvisualizer.cpp .\pathfinding.cpp
+
+g++ .\main.cpp .\graph.cpp .\SVGvisualizer.cpp .\pathfinding.cpp
