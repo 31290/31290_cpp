@@ -49,8 +49,27 @@ int main(int argc, char *argv[])
     }
     else
     {
-        graph = Graph(NEST, COUNT, 120, 120);
+        // graph = Graph(NEST, COUNT, 120, 120);
     }
+
+    // graph.createNode(0, Coords(100, 100));
+    // graph.createNode(1, Coords(150, 100));
+    // graph.createNode(2, Coords(200, 150));
+    // graph.createNode(3, Coords(100, 200));
+
+    // // A: B, C  
+    // // B: A, D  
+    // // C: A  
+    // // D: B
+    // graph.createEdge(0, 1);
+    // graph.createEdge(0, 2);
+    // graph.createEdge(1, 3);
+    // graph.createEdge(1, 2);
+    // graph.createEdge(2, 3);
+
+
+    targetNode = std::min(targetNode, (int)graph.nodes.size() - 1);
+
 
     for (Node *node : graph.nodes)
     {

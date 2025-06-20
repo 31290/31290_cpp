@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="170" height="170" xmlns="http://www.w3.org/2000/svg">
+<style>
+.node-unvisited { fill: white; stroke: black; stroke-width: 2; }
+.node-visited { fill: lightblue; stroke: black; stroke-width: 2; }
+.node-queued { fill: orange; stroke: black; stroke-width: 2; }
+.node-current { fill: yellow; stroke: black; stroke-width: 3; }
+.node-path { fill: lightgreen; stroke: black; stroke-width: 2; }
+.edge { stroke: gray; stroke-width: 1; }
+.edge-path { stroke: red; stroke-width: 3; }
+.text { font-family: Arial; font-size: 12px; text-anchor: middle; }
+.weight-text { font-family: Arial; font-size: 10px; text-anchor: middle; fill: blue; }
+.distance-text { font-family: Arial; font-size: 8px; text-anchor: middle; fill: red; font-weight: bold; }
+</style>
+<line x1="50" y1="50" x2="100" y2="50" class="edge"/>
+<text x="75" y="50" class="weight-text">50</text>
+<line x1="50" y1="50" x2="150" y2="100" class="edge"/>
+<text x="100" y="75" class="weight-text">111</text>
+<line x1="100" y1="50" x2="50" y2="150" class="edge"/>
+<text x="75" y="100" class="weight-text">111</text>
+<line x1="100" y1="50" x2="150" y2="100" class="edge"/>
+<text x="125" y="75" class="weight-text">70</text>
+<line x1="150" y1="100" x2="50" y2="150" class="edge"/>
+<text x="100" y="125" class="weight-text">111</text>
+<circle cx="50" cy="50" r="15" class="node-current"/>
+<text x="50" y="54" class="text">0</text>
+<circle cx="100" cy="50" r="15" class="node-unvisited"/>
+<text x="100" y="54" class="text">1</text>
+<circle cx="150" cy="100" r="15" class="node-unvisited"/>
+<text x="150" y="104" class="text">2</text>
+<circle cx="50" cy="150" r="15" class="node-unvisited"/>
+<text x="50" y="154" class="text">3</text>
+</svg>
