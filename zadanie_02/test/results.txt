@@ -51,14 +51,24 @@ Chebyshev: distance=480, steps=25, optimal=YES
 BEST: Pythagorean (steps: 25)
 WORST: Pythagorean (steps: 25)
 
+=== TwoBranchMerge ===
+Start: 0, Target: 3
+Dijkstra: distance=180, steps=13
+Pythagorean: distance=180, steps=10, optimal=YES
+DotProduct: distance=180, steps=10, optimal=YES
+Manhattan: distance=180, steps=10, optimal=YES
+Chebyshev: distance=180, steps=10, optimal=YES
+BEST: Pythagorean (steps: 10)
+WORST: Pythagorean (steps: 10)
+
 
 SUMMARY ANALYSIS
 ================
 
 Algorithm Performance:
-AStar_Chebyshev: 5/5 optimal (100.0%), wins: 0
-AStar_DotProduct: 5/5 optimal (100.0%), wins: 0
-AStar_Manhattan: 5/5 optimal (100.0%), wins: 0
-AStar_Pythagorean: 5/5 optimal (100.0%), wins: 5
+AStar_Chebyshev: 6/6 optimal (100.0%), wins: 0
+AStar_DotProduct: 6/6 optimal (100.0%), wins: 0
+AStar_Manhattan: 6/6 optimal (100.0%), wins: 0
+AStar_Pythagorean: 6/6 optimal (100.0%), wins: 6
 
-OVERALL CHAMPION: AStar_Pythagorean (won 5 scenarios)
+OVERALL CHAMPION: AStar_Pythagorean (won 6 scenarios)
